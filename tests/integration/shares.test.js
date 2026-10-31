@@ -34,7 +34,7 @@ describe('Share Creation, Receiving, and Downloading API Integration', () => {
 
   it('A3: should create a multiple-file share with text', async () => {
     const file1 = Buffer.from('console.log("hello");');
-    const file2 = Buffer.from('data:image/png;base64,dummyimagecontent');
+    const file2 = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D]);
 
     const res = await request(app)
       .post('/api/shares')

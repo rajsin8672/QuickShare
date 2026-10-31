@@ -48,6 +48,7 @@ class MemoryDB {
         original_filename: f.originalFilename,
         mime_type: f.mimeType,
         file_size: f.fileSize,
+        file_category: f.fileCategory || 'document',
         created_at: now
       };
       this.files.set(fileId, record);
@@ -205,7 +206,8 @@ class SupabaseDB {
       storage_path: f.storagePath,
       original_filename: f.originalFilename,
       mime_type: f.mimeType,
-      file_size: f.fileSize
+      file_size: f.fileSize,
+      file_category: f.fileCategory || 'document'
     }));
 
     const { data, error } = await this.client
@@ -248,7 +250,7 @@ class SupabaseDB {
   async getShareFiles(shareId) {
     const { data, error } = await this.client
       .from('share_files')
-      .select('id, share_id, storage_path, original_filename, mime_type, file_size, created_at')
+      .select('id, share_id, storage_path, original_filename, mime_type, file_size, file_category, created_at')
       .eq('share_id', shareId);
 
     if (error) {

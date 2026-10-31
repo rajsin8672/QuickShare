@@ -17,7 +17,8 @@ import {
   validateExpiryMinutes,
   validateDownloadLimit,
   calculateExpiresAt,
-  sanitizeFilename
+  sanitizeFilename,
+  getFileCategory
 } from '../utils/validation.js';
 
 export class ShareService {
@@ -51,7 +52,7 @@ export class ShareService {
       }
       totalSizeBytes += file.size;
 
-      const typeCheck = validateFileType(file.originalname, file.mimetype);
+      const typeCheck = validateFileType(file.originalname, file.mimetype, file.buffer);
       if (!typeCheck.valid) {
         const err = new Error(typeCheck.error);
         err.statusCode = 400;
@@ -128,11 +129,13 @@ export class ShareService {
         await storage.uploadFile(storagePath, file.buffer, file.mimetype);
         uploadedStoragePaths.push(storagePath);
 
+        const category = getFileCategory(file.originalname, file.mimetype);
         fileRecordsToInsert.push({
           storagePath,
           originalFilename: safeName,
           mimeType: file.mimetype,
-          fileSize: file.size
+          fileSize: file.size,
+          fileCategory: category
         });
       }
 
@@ -229,13 +232,18 @@ export class ShareService {
 
     // Full authorized details
     const files = await db.getShareFiles(share.id);
-    const safeFiles = files.map(f => ({
-      id: f.id,
-      originalFilename: f.original_filename,
-      mimeType: f.mime_type,
-      fileSize: f.file_size,
-      canPreview: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'text/plain'].includes(f.mime_type)
-    }));
+    const safeFiles = files.map(f => {
+      const category = f.file_category || getFileCategory(f.original_filename, f.mime_type);
+      const canPreview = ['image', 'video', 'pdf', 'text'].includes(category);
+      return {
+        id: f.id,
+        originalFilename: f.original_filename,
+        mimeType: f.mime_type,
+        fileSize: f.file_size,
+        fileCategory: category,
+        canPreview
+      };
+    });
 
     return {
       requiresPassword: false,

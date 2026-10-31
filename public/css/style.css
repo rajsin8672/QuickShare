@@ -826,8 +826,47 @@ textarea.form-control {
 
 .badge-pdf { background-color: #fee2e2; color: #b91c1c; }
 .badge-image { background-color: #e0e7ff; color: #4338ca; }
+.badge-video { background-color: #f3e8ff; color: #7e22ce; }
 .badge-text { background-color: #f1f5f9; color: #475569; }
 .badge-doc { background-color: #dbeafe; color: #1d4ed8; }
+
+.file-thumbnail {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  background-color: #e2e8f0;
+}
+
+.file-icon-placeholder {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.file-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.file-item-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
 
 .table-actions {
   display: flex;
@@ -950,6 +989,23 @@ textarea.form-control {
   object-fit: contain;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
+}
+
+.modal-body video {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: var(--radius-md);
+  background-color: #000;
+  box-shadow: var(--shadow-md);
+}
+
+.video-fallback-box {
+  text-align: center;
+  padding: 24px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  max-width: 480px;
 }
 
 .modal-body iframe, .modal-body embed {

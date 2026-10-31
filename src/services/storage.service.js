@@ -43,12 +43,12 @@ class LocalStorageService {
     return await fs.promises.readFile(fullPath);
   }
 
-  async getFileStream(storagePath) {
+  async getFileStream(storagePath, options = {}) {
     const fullPath = this.getFilePath(storagePath);
     if (!fs.existsSync(fullPath)) {
       throw new Error(`File not found at storage path: ${storagePath}`);
     }
-    return fs.createReadStream(fullPath);
+    return fs.createReadStream(fullPath, options);
   }
 
   async deleteFiles(storagePaths) {
@@ -110,8 +110,13 @@ class SupabaseStorageService {
     return Buffer.from(arrayBuffer);
   }
 
-  async getFileStream(storagePath) {
+  async getFileStream(storagePath, options = {}) {
     const buffer = await this.getFileBuffer(storagePath);
+    if (typeof options.start === 'number' || typeof options.end === 'number') {
+      const start = options.start || 0;
+      const end = options.end !== undefined ? options.end + 1 : buffer.length;
+      return Readable.from(buffer.subarray(start, end));
+    }
     return Readable.from(buffer);
   }
 

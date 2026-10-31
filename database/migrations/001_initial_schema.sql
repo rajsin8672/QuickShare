@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS share_files (
     original_filename TEXT NOT NULL,
     mime_type TEXT NOT NULL,
     file_size BIGINT NOT NULL,
+    file_category VARCHAR(20) DEFAULT 'document',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

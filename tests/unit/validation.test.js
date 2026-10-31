@@ -5,7 +5,9 @@ import {
   validateFileType,
   validateExpiryMinutes,
   validateDownloadLimit,
-  calculateExpiresAt
+  calculateExpiresAt,
+  getFileCategory,
+  verifyFileSignature
 } from '../../src/utils/validation.js';
 
 describe('Validation and Sanitization Utilities', () => {
@@ -17,15 +19,21 @@ describe('Validation and Sanitization Utilities', () => {
     assert.ok(sanitizeFilename('').startsWith('file_'));
   });
 
-  it('should validate allowed file extensions and MIME types', () => {
-    // Valid types
+  it('should validate allowed file extensions and MIME types including GIF and videos', () => {
+    // Valid documents and images
     assert.ok(validateFileType('report.pdf', 'application/pdf').valid);
     assert.ok(validateFileType('photo.jpg', 'image/jpeg').valid);
     assert.ok(validateFileType('graphic.png', 'image/png').valid);
     assert.ok(validateFileType('picture.webp', 'image/webp').valid);
+    assert.ok(validateFileType('animation.gif', 'image/gif').valid);
     assert.ok(validateFileType('notes.txt', 'text/plain').valid);
     assert.ok(validateFileType('contract.doc', 'application/msword').valid);
     assert.ok(validateFileType('document.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document').valid);
+
+    // Valid videos
+    assert.ok(validateFileType('clip.mp4', 'video/mp4').valid);
+    assert.ok(validateFileType('stream.webm', 'video/webm').valid);
+    assert.ok(validateFileType('recording.mov', 'video/quicktime').valid);
 
     // Invalid extension
     const invalidExt = validateFileType('malware.exe', 'application/x-msdownload');
@@ -34,6 +42,32 @@ describe('Validation and Sanitization Utilities', () => {
     // Mismatched MIME and extension
     const mismatch = validateFileType('spoofed.jpg', 'application/pdf');
     assert.equal(mismatch.valid, false);
+  });
+
+  it('should accurately categorize file types', () => {
+    assert.equal(getFileCategory('photo.jpg', 'image/jpeg'), 'image');
+    assert.equal(getFileCategory('anim.gif', 'image/gif'), 'image');
+    assert.equal(getFileCategory('video.mp4', 'video/mp4'), 'video');
+    assert.equal(getFileCategory('clip.webm', 'video/webm'), 'video');
+    assert.equal(getFileCategory('doc.pdf', 'application/pdf'), 'pdf');
+    assert.equal(getFileCategory('readme.txt', 'text/plain'), 'text');
+    assert.equal(getFileCategory('contract.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'), 'document');
+  });
+
+  it('should verify file magic byte signatures', () => {
+    const pngHeader = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
+    const jpegHeader = Buffer.from([0xFF, 0xD8, 0xFF, 0xE0]);
+    const gifHeader = Buffer.from('GIF89a');
+    const pdfHeader = Buffer.from('%PDF-1.7');
+
+    assert.ok(verifyFileSignature(pngHeader, 'image/png'));
+    assert.ok(verifyFileSignature(jpegHeader, 'image/jpeg'));
+    assert.ok(verifyFileSignature(gifHeader, 'image/gif'));
+    assert.ok(verifyFileSignature(pdfHeader, 'application/pdf'));
+
+    // Spoofed: JPEG claimed as PNG
+    assert.equal(verifyFileSignature(jpegHeader, 'image/png'), false);
+    assert.equal(verifyFileSignature(pngHeader, 'application/pdf'), false);
   });
 
   it('should validate and constrain expiration minutes', () => {

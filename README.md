@@ -9,15 +9,16 @@ QuickShare is a secure, modern, full-stack web application designed for fast, ha
 
 - **No Accounts Required**: Zero signup, zero registration, and zero third-party tracking pixels or cookies.
 - **Unambiguous 6-Character Codes**: Generated using an alphabet (`23456789ABCDEFGHJKLMNPQRSTUVWXYZ`) that removes confusing characters (such as `0` vs `O` and `1` vs `I`/`l`).
-- **Flexible Content Sharing**:
-  - Multiple file uploads (up to 10 files per share).
-  - Supported formats: PDF, JPG, JPEG, PNG, WEBP, TXT, DOC, DOCX.
-  - Text-only sharing (up to 100,000 characters) without requiring file uploads.
-  - Hybrid sharing: combine text notes and files in a single transfer.
+- **Rich Content & Media Support**:
+  - **Photos & Images**: JPG, JPEG, PNG, WEBP, and GIF with client-side image thumbnail previews before uploading, gallery viewing, and original-quality downloads.
+  - **Videos**: MP4, WEBM, and MOV with dimension/duration detection, in-browser HTML5 video player with seeking (HTTP 206 Partial Content Range streaming), and graceful fallback to direct download if a browser lacks codec decoding support.
+  - **Documents**: PDF, TXT, Word DOC, and Word DOCX with PDF and plaintext in-browser previews.
+  - **Text Sharing**: Plaintext and long messages (up to 100,000 characters) with real-time character counter.
+  - **Multi-File & Mixed Shares**: Combine photos, videos, PDFs, documents, and notes into a single share (up to 10 files, 50MB per file, 100MB total).
 - **Configurable Automatic Expiration**: Choose between 30 minutes (default), 1 hour, 6 hours, 24 hours, or 7 days. Once expired, files and records are automatically purged from storage.
 - **Password Protection**: Senders can enforce a password hashed with bcrypt/salt; receivers must unlock before metadata, text, or files can be accessed.
 - **Download Limits & Atomic Accounting**: Senders can enforce a maximum download count (e.g., 1 download for single-use burn-after-reading transfers). Concurrency-safe atomic increments prevent race conditions.
-- **Safe Previews**: Browser-safe in-browser previews for PDFs, images, and plain text with strict Content-Security-Policy headers.
+- **Safe Previews**: Browser-safe in-browser previews for PDFs, images, videos, and plain text with strict Content-Security-Policy headers.
 - **ZIP Archive Downloads**: Senders and receivers can download all shared files in one click as a single streaming ZIP archive.
 - **Owner Deletion Capability**: Senders receive a secret cryptographic deletion token upon upload to immediately destroy their share at any time before expiration.
 - **Brute-Force & Flooding Defense**: Multi-tier Express rate limiting to prevent code guessing, password brute-forcing, and storage flooding.
@@ -152,20 +153,19 @@ To connect QuickShare to Supabase PostgreSQL and Supabase Storage in production:
 
 ### 2. Apply Database Migrations
 1. In the Supabase Dashboard, open the **SQL Editor**.
-2. Copy and paste the contents of [`database/migrations/001_initial_schema.sql`](file:///Users/karankumar/Desktop/QuickShare/database/migrations/001_initial_schema.sql).
-3. Click **Run**. This creates:
+2. Run [`database/migrations/001_initial_schema.sql`](file:///Users/karankumar/Desktop/QuickShare/database/migrations/001_initial_schema.sql) and [`database/migrations/002_add_file_category.sql`](file:///Users/karankumar/Desktop/QuickShare/database/migrations/002_add_file_category.sql).
+3. This creates:
    - `shares` table with indexed `share_code` and status checks.
-   - `share_files` table with foreign key cascade deletions.
+   - `share_files` table with `file_category` (image, video, pdf, document, text) and cascade deletions.
    - `download_events` table for anonymized audit tracking.
    - `increment_download_count` stored procedure for concurrency-safe atomic download limits.
    - Row Level Security (RLS) policies denying all anonymous public direct access.
 
 ### 3. Set Up the Storage Bucket
-1. Go to **Storage** -> **Create a new bucket**.
-2. Name the bucket: **`shared-files`**.
-3. Toggle **Public bucket** to **OFF** (Keep it strictly private).
-4. Set the file size limit to `26214400` bytes (25MB).
-5. Alternatively, run the SQL script [`database/setup_storage.sql`](file:///Users/karankumar/Desktop/QuickShare/database/setup_storage.sql) in the SQL Editor.
+1. Go to **Storage** -> **Create a new bucket** named **`shared-files`**.
+2. Toggle **Public bucket** to **OFF** (Keep it strictly private).
+3. Set the file size limit to `52428800` bytes (50MB).
+4. Run the SQL script [`database/setup_storage.sql`](file:///Users/karankumar/Desktop/QuickShare/database/setup_storage.sql) in the SQL Editor to configure allowed MIME types for images, videos, PDFs, and documents.
 
 ### 4. Update `.env` with Supabase Credentials
 ```env

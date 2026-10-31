@@ -24,10 +24,15 @@ export const config = {
   // Security Secrets
   shareTokenSecret: process.env.SHARE_TOKEN_SECRET || 'quickshare_default_secret_key_change_in_production_32chars',
 
-  // Upload limits
-  maxFileSize: parseInt(process.env.MAX_FILE_SIZE_BYTES || '26214400', 10), // 25 MB
-  maxTotalSize: parseInt(process.env.MAX_TOTAL_SIZE_BYTES || '52428800', 10), // 50 MB
+  // Upload limits (Default: 50MB single file, 100MB total, up to 10 files)
+  maxFileSize: parseInt(process.env.MAX_FILE_SIZE_BYTES || '52428800', 10), // 50 MB
+  maxTotalSize: parseInt(process.env.MAX_TOTAL_SIZE_BYTES || '104857600', 10), // 100 MB
   maxFileCount: parseInt(process.env.MAX_FILE_COUNT || '10', 10), // 10 files
+
+  // Format configurations
+  allowedImageFormats: (process.env.ALLOWED_IMAGE_FORMATS || 'jpg,jpeg,png,webp,gif').toLowerCase().split(',').map(s => s.trim()),
+  allowedVideoFormats: (process.env.ALLOWED_VIDEO_FORMATS || 'mp4,webm,mov').toLowerCase().split(',').map(s => s.trim()),
+  allowedDocFormats: (process.env.ALLOWED_DOC_FORMATS || 'pdf,txt,doc,docx').toLowerCase().split(',').map(s => s.trim()),
 
   // Expiration & Cleanup
   defaultExpiryMinutes: parseInt(process.env.DEFAULT_EXPIRY_MINUTES || '30', 10),

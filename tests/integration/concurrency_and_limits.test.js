@@ -17,14 +17,9 @@ describe('Concurrency, Upload Limits, and File Previews', () => {
     assert.ok(res.body.error.includes('10 files'));
   });
 
-  it('L2: should reject upload if total size exceeds 50MB limit', async () => {
-    // Generate a dummy buffer larger than 50MB (e.g. 52MB)
-    // Note: To avoid heavy memory allocation in fast tests, simulate with oversized total size check
-    const largeChunk = Buffer.alloc(1024 * 1024); // 1MB buffer
-
-    // Attach 51 files of 1MB? Max file count is 10.
-    // If one file is 26MB (> 25MB single file limit):
-    const largeFile = Buffer.alloc(26 * 1024 * 1024); // 26MB
+  it('L2: should reject upload if file exceeds maximum single file limit (50MB)', async () => {
+    // Single file exceeding 50MB (52MB):
+    const largeFile = Buffer.alloc(52 * 1024 * 1024); // 52MB
     const res = await request(app)
       .post('/api/shares')
       .attach('files', largeFile, { filename: 'oversized.pdf', contentType: 'application/pdf' });

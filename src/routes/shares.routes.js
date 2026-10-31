@@ -178,7 +178,7 @@ router.get('/:code/files/:fileId/download', async (req, res, next) => {
 });
 
 /**
- * GET /api/shares/:code/files/:fileId/preview - Preview supported file (PDF, Images, Text)
+ * GET /api/shares/:code/files/:fileId/preview - Preview supported file (PDF, Photos, Videos, Text)
  */
 router.get('/:code/files/:fileId/preview', async (req, res, next) => {
   try {
@@ -187,8 +187,18 @@ router.get('/:code/files/:fileId/preview', async (req, res, next) => {
 
     const { file } = await shareService.getFileDownload(code, fileId, token, true, null);
 
-    // Check preview support
-    const previewable = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'text/plain'];
+    // Check preview support (Images, Videos, PDF, Plaintext)
+    const previewable = [
+      'application/pdf',
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+      'video/mp4',
+      'video/webm',
+      'video/quicktime',
+      'text/plain'
+    ];
     if (!previewable.includes(file.mime_type)) {
       return res.status(400).json({
         success: false,
@@ -196,13 +206,43 @@ router.get('/:code/files/:fileId/preview', async (req, res, next) => {
       });
     }
 
+    const fileSize = Number(file.file_size);
+    const range = req.headers.range;
+
+    // Support HTTP Range requests for video seeking and streaming
+    if (range && fileSize > 0) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+
+      if (start >= fileSize || end >= fileSize) {
+        res.setHeader('Content-Range', `bytes */${fileSize}`);
+        return res.status(416).end();
+      }
+
+      const chunkSize = (end - start) + 1;
+      const stream = await storage.getFileStream(file.storage_path, { start, end });
+
+      res.status(206);
+      res.setHeader('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Content-Length', chunkSize);
+      res.setHeader('Content-Type', file.mime_type);
+      res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(file.original_filename)}"`);
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+
+      return stream.pipe(res);
+    }
+
     const stream = await storage.getFileStream(file.storage_path);
 
-    // Isolated sandbox headers for preview
+    res.status(200);
     res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(file.original_filename)}"`);
     res.setHeader('Content-Type', file.mime_type);
+    res.setHeader('Content-Length', fileSize);
+    res.setHeader('Accept-Ranges', 'bytes');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Content-Security-Policy', "default-src 'self'; style-src 'unsafe-inline'; sandbox");
+    res.setHeader('Content-Security-Policy', "default-src 'self'; style-src 'unsafe-inline'; media-src 'self' blob: data:; sandbox allow-scripts allow-same-origin");
 
     stream.pipe(res);
   } catch (err) {

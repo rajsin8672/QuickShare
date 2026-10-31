@@ -1,4 +1,5 @@
 import multer from 'multer';
+import { config } from '../config/env.js';
 
 /**
  * Centralized application error handling middleware
@@ -14,7 +15,7 @@ export function errorHandler(err, req, res, next) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
         success: false,
-        error: 'One or more files exceed the maximum permitted file size limit (25MB).'
+        error: `One or more files exceed the maximum permitted file size limit (${Math.round(config.maxFileSize / 1024 / 1024)}MB).`
       });
     }
     if (err.code === 'LIMIT_FILE_COUNT') {

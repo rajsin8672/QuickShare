@@ -248,17 +248,22 @@ document.addEventListener('DOMContentLoaded', () => {
         tdName.style.fontWeight = '500';
         tdName.textContent = file.originalFilename;
 
-        // Type Badge
+        // Type Badge based on fileCategory
         const tdType = document.createElement('td');
         const badge = document.createElement('span');
         badge.className = 'file-badge';
-        if (file.mimeType.includes('pdf')) {
+
+        const category = file.fileCategory || 'document';
+        if (category === 'video') {
+          badge.classList.add('badge-video');
+          badge.textContent = 'VIDEO';
+        } else if (category === 'image') {
+          badge.classList.add('badge-image');
+          badge.textContent = 'PHOTO';
+        } else if (category === 'pdf') {
           badge.classList.add('badge-pdf');
           badge.textContent = 'PDF';
-        } else if (file.mimeType.includes('image')) {
-          badge.classList.add('badge-image');
-          badge.textContent = 'IMAGE';
-        } else if (file.mimeType.includes('text')) {
+        } else if (category === 'text') {
           badge.classList.add('badge-text');
           badge.textContent = 'TXT';
         } else {
@@ -276,12 +281,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'table-actions';
 
-        // Preview button (if supported format)
+        // Preview / Play button (if supported format)
         if (file.canPreview) {
           const previewBtn = document.createElement('button');
           previewBtn.type = 'button';
           previewBtn.className = 'btn btn-secondary btn-sm';
-          previewBtn.textContent = 'Preview';
+          if (category === 'video') {
+            previewBtn.textContent = 'Play Video';
+          } else if (category === 'image') {
+            previewBtn.textContent = 'Preview Photo';
+          } else {
+            previewBtn.textContent = 'Preview';
+          }
           previewBtn.addEventListener('click', () => openPreviewModal(file));
           actionsDiv.appendChild(previewBtn);
         }
@@ -380,16 +391,59 @@ document.addEventListener('DOMContentLoaded', () => {
       previewUrl += `?token=${encodeURIComponent(activeAuthToken)}`;
     }
 
-    if (file.mimeType.startsWith('image/')) {
+    const category = file.fileCategory || 'document';
+
+    // Video Playback
+    if (category === 'video' || file.mimeType.startsWith('video/')) {
+      const video = document.createElement('video');
+      video.controls = true;
+      video.playsInline = true;
+      video.preload = 'auto';
+
+      const source = document.createElement('source');
+      source.src = previewUrl;
+      source.type = file.mimeType;
+      video.appendChild(source);
+
+      // Handle unsupported video codec / playback error
+      video.onerror = () => {
+        modalBody.innerHTML = '';
+        const fallbackBox = document.createElement('div');
+        fallbackBox.className = 'video-fallback-box';
+
+        const title = document.createElement('p');
+        title.style.fontWeight = '700';
+        title.style.marginBottom = '8px';
+        title.textContent = 'Playback Unavailable in This Browser';
+
+        const desc = document.createElement('p');
+        desc.style.color = 'var(--text-muted)';
+        desc.style.fontSize = '0.9rem';
+        desc.style.marginBottom = '16px';
+        desc.textContent = `Your browser does not support playing this video format or codec directly (${file.originalFilename.split('.').pop().toUpperCase()}). You can download the video file to play it on your device.`;
+
+        const dlBtn = document.createElement('button');
+        dlBtn.className = 'btn btn-primary btn-sm';
+        dlBtn.textContent = 'Download Video';
+        dlBtn.onclick = () => downloadSingleFile(file);
+
+        fallbackBox.appendChild(title);
+        fallbackBox.appendChild(desc);
+        fallbackBox.appendChild(dlBtn);
+        modalBody.appendChild(fallbackBox);
+      };
+
+      modalBody.appendChild(video);
+    } else if (category === 'image' || file.mimeType.startsWith('image/')) {
       const img = document.createElement('img');
       img.src = previewUrl;
       img.alt = file.originalFilename;
       modalBody.appendChild(img);
-    } else if (file.mimeType === 'application/pdf') {
+    } else if (category === 'pdf' || file.mimeType === 'application/pdf') {
       const iframe = document.createElement('iframe');
       iframe.src = previewUrl;
       modalBody.appendChild(iframe);
-    } else if (file.mimeType === 'text/plain') {
+    } else if (category === 'text' || file.mimeType === 'text/plain') {
       const pre = document.createElement('pre');
       pre.textContent = 'Loading text preview...';
       modalBody.appendChild(pre);
@@ -414,7 +468,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function closePreviewModal() {
     if (previewModal) {
       previewModal.classList.remove('active');
-      if (modalBody) modalBody.innerHTML = '';
+      if (modalBody) {
+        // Stop any active video playback immediately
+        const video = modalBody.querySelector('video');
+        if (video) {
+          video.pause();
+          video.removeAttribute('src');
+          video.load();
+        }
+        modalBody.innerHTML = '';
+      }
     }
   }
 
@@ -434,4 +497,3 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchShare(cleanCode);
   }
 });
-

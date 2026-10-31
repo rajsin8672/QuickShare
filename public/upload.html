@@ -60,8 +60,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
             <p class="dropzone-text">Drag and drop files here, or <button type="button" class="btn btn-outline-primary btn-sm" id="browse-btn" style="margin-left: 4px;">Browse Files</button></p>
-            <p class="dropzone-subtext">Supported formats: PDF, JPG, PNG, WEBP, TXT, DOC, DOCX. Up to 10 files (25MB each, 50MB total).</p>
-            <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.txt,.doc,.docx" style="display: none;">
+            <p class="dropzone-subtext">Supported formats: Photos (JPG, PNG, WEBP, GIF), Videos (MP4, WEBM, MOV), PDFs, and Documents (TXT, DOC, DOCX). Up to 10 files (50MB each, 100MB total).</p>
+            <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.gif,.mp4,.webm,.mov,.txt,.doc,.docx" style="display: none;">
           </div>
 
           <!-- Selected Files List -->
@@ -140,6 +140,9 @@
           </div>
           <div class="progress-bar-bg">
             <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          </div>
+          <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+            <button type="button" class="btn btn-secondary btn-sm" id="cancel-upload-btn">Cancel Upload</button>
           </div>
         </div>
 

@@ -4,11 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
 
   // State
-  let selectedFiles = [];
+  let selectedFiles = []; // Array of { file, previewUrl, category, meta }
   const MAX_FILE_COUNT = 10;
-  const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
-  const MAX_TOTAL_SIZE = 50 * 1024 * 1024; // 50 MB
-  const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.webp', '.txt', '.doc', '.docx'];
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+  const MAX_TOTAL_SIZE = 100 * 1024 * 1024; // 100 MB
+  const ALLOWED_EXTENSIONS = [
+    '.pdf', '.jpg', '.jpeg', '.png', '.webp', '.gif',
+    '.mp4', '.webm', '.mov', '.txt', '.doc', '.docx'
+  ];
 
   // DOM Elements
   const dropzone = document.getElementById('dropzone');
@@ -23,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const passwordInput = document.getElementById('password-input');
   const downloadLimitInput = document.getElementById('download-limit-input');
   const uploadBtn = document.getElementById('upload-btn');
+  const cancelUploadBtn = document.getElementById('cancel-upload-btn');
   const progressContainer = document.getElementById('progress-container');
   const progressBarFill = document.getElementById('progress-bar-fill');
   const progressPercent = document.getElementById('progress-percent');
@@ -42,9 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const deleteShareBtn = document.getElementById('delete-share-btn');
   const newShareBtn = document.getElementById('new-share-btn');
 
-  // Active Share Deletion State
+  // Active Share Deletion State & Active Upload XHR
   let currentShareCode = null;
   let currentDeletionToken = null;
+  let activeXhr = null;
 
   // 1. Text input character counter
   if (textContent && charCounter) {
@@ -105,6 +110,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Determine file category
+  function detectCategory(filename, mimeType) {
+    const ext = '.' + filename.split('.').pop().toLowerCase();
+    const lowerMime = (mimeType || '').toLowerCase();
+    if (['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext) || lowerMime.startsWith('image/')) {
+      return 'image';
+    }
+    if (['.mp4', '.webm', '.mov'].includes(ext) || lowerMime.startsWith('video/')) {
+      return 'video';
+    }
+    if (ext === '.pdf' || lowerMime === 'application/pdf') {
+      return 'pdf';
+    }
+    if (ext === '.txt' || lowerMime === 'text/plain') {
+      return 'text';
+    }
+    return 'document';
+  }
+
+  // Format seconds to mm:ss
+  function formatDuration(sec) {
+    if (!sec || isNaN(sec)) return '';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  }
+
   // Handle addition of new files
   function handleFilesAdded(newFiles) {
     for (const file of newFiles) {
@@ -116,20 +148,61 @@ document.addEventListener('DOMContentLoaded', () => {
       // Check file extension
       const ext = '.' + file.name.split('.').pop().toLowerCase();
       if (!ALLOWED_EXTENSIONS.includes(ext)) {
-        showToast(`"${file.name}" has an unsupported format. Supported: PDF, JPG, PNG, WEBP, TXT, DOC, DOCX.`, 'error');
+        showToast(`"${file.name}" has an unsupported format. Supported: Photos, Videos (MP4, WEBM, MOV), PDFs, and Documents (DOC, DOCX, TXT).`, 'error');
         continue;
       }
 
       // Check single file size
       if (file.size > MAX_FILE_SIZE) {
-        showToast(`"${file.name}" exceeds 25MB limit.`, 'error');
+        showToast(`"${file.name}" exceeds 50MB limit.`, 'error');
         continue;
       }
 
       // Check duplicate
-      const isDuplicate = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+      const isDuplicate = selectedFiles.some(item => item.file.name === file.name && item.file.size === file.size);
       if (!isDuplicate) {
-        selectedFiles.push(file);
+        const category = detectCategory(file.name, file.type);
+        let previewUrl = null;
+
+        // Generate temporary object URL for images
+        if (category === 'image') {
+          try {
+            previewUrl = URL.createObjectURL(file);
+          } catch (e) {
+            console.warn('Failed to create object URL for image:', e);
+          }
+        }
+
+        const fileEntry = {
+          file,
+          previewUrl,
+          category,
+          metaText: ''
+        };
+
+        // For videos, attempt to safely read duration and dimensions
+        if (category === 'video') {
+          try {
+            const tempVideoUrl = URL.createObjectURL(file);
+            const tempVideo = document.createElement('video');
+            tempVideo.preload = 'metadata';
+            tempVideo.src = tempVideoUrl;
+            tempVideo.onloadedmetadata = () => {
+              const dur = formatDuration(tempVideo.duration);
+              const dim = tempVideo.videoWidth && tempVideo.videoHeight ? `${tempVideo.videoWidth}x${tempVideo.videoHeight}` : '';
+              fileEntry.metaText = [dim, dur].filter(Boolean).join(' • ');
+              URL.revokeObjectURL(tempVideoUrl);
+              renderSelectedFiles();
+            };
+            tempVideo.onerror = () => {
+              URL.revokeObjectURL(tempVideoUrl);
+            };
+          } catch (e) {
+            console.warn('Video metadata extraction failed:', e);
+          }
+        }
+
+        selectedFiles.push(fileEntry);
       }
     }
     renderSelectedFiles();
@@ -146,27 +219,87 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let totalBytes = 0;
-    selectedFiles.forEach((file, index) => {
+    selectedFiles.forEach((item, index) => {
+      const file = item.file;
       totalBytes += file.size;
 
-      const item = document.createElement('div');
-      item.className = 'file-item';
+      const row = document.createElement('div');
+      row.className = 'file-item';
 
       const info = document.createElement('div');
       info.className = 'file-item-info';
+
+      // Visual Thumbnail or Category Icon
+      if (item.category === 'image' && item.previewUrl) {
+        const img = document.createElement('img');
+        img.className = 'file-thumbnail';
+        img.src = item.previewUrl;
+        img.alt = file.name;
+        info.appendChild(img);
+      } else {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'file-icon-placeholder';
+
+        let iconSvg = '';
+        if (item.category === 'video') {
+          iconSvg = `
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+          `;
+        } else if (item.category === 'pdf') {
+          iconSvg = `
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+          `;
+        } else {
+          iconSvg = `
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          `;
+        }
+        placeholder.innerHTML = iconSvg;
+        info.appendChild(placeholder);
+      }
+
+      // Metadata details
+      const metaDiv = document.createElement('div');
+      metaDiv.className = 'file-item-meta';
 
       const nameSpan = document.createElement('span');
       nameSpan.className = 'file-name';
       nameSpan.textContent = file.name;
       nameSpan.title = file.name;
 
+      const subDiv = document.createElement('div');
+      subDiv.className = 'file-item-sub';
+
+      // Badge
+      const badge = document.createElement('span');
+      badge.className = `file-badge badge-${item.category === 'video' ? 'video' : item.category === 'image' ? 'image' : item.category === 'pdf' ? 'pdf' : item.category === 'text' ? 'text' : 'doc'}`;
+      badge.textContent = item.category.toUpperCase();
+
       const sizeSpan = document.createElement('span');
       sizeSpan.className = 'file-size';
-      sizeSpan.textContent = `(${formatBytes(file.size)})`;
+      sizeSpan.textContent = formatBytes(file.size);
 
-      info.appendChild(nameSpan);
-      info.appendChild(sizeSpan);
+      subDiv.appendChild(badge);
+      subDiv.appendChild(sizeSpan);
 
+      if (item.metaText) {
+        const extraSpan = document.createElement('span');
+        extraSpan.style.color = 'var(--text-muted)';
+        extraSpan.textContent = item.metaText;
+        subDiv.appendChild(extraSpan);
+      }
+
+      metaDiv.appendChild(nameSpan);
+      metaDiv.appendChild(subDiv);
+      info.appendChild(metaDiv);
+
+      // Remove button
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.className = 'file-remove-btn';
@@ -179,17 +312,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       removeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        // Revoke temporary object URL if present
+        if (item.previewUrl) {
+          URL.revokeObjectURL(item.previewUrl);
+        }
         selectedFiles.splice(index, 1);
         renderSelectedFiles();
       });
 
-      item.appendChild(info);
-      item.appendChild(removeBtn);
-      selectedFilesList.appendChild(item);
+      row.appendChild(info);
+      row.appendChild(removeBtn);
+      selectedFilesList.appendChild(row);
     });
 
     if (totalSizeInfo) {
-      totalSizeInfo.textContent = `Total: ${selectedFiles.length} file(s), ${formatBytes(totalBytes)} (Max 50MB)`;
+      totalSizeInfo.textContent = `Total: ${selectedFiles.length} file(s), ${formatBytes(totalBytes)} (Max 100MB)`;
       if (totalBytes > MAX_TOTAL_SIZE) {
         totalSizeInfo.style.color = 'var(--danger)';
       } else {
@@ -198,7 +335,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4. Submit Upload
+  // 4. Cancel active upload
+  if (cancelUploadBtn) {
+    cancelUploadBtn.addEventListener('click', () => {
+      if (activeXhr) {
+        activeXhr.abort();
+        activeXhr = null;
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = 'Upload & Generate Code';
+        if (progressContainer) progressContainer.style.display = 'none';
+        showToast('Upload canceled.', 'info');
+      }
+    });
+  }
+
+  // 5. Submit Upload
   if (uploadBtn) {
     uploadBtn.addEventListener('click', async (e) => {
       e.preventDefault();
@@ -210,9 +361,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Check total size
-      const totalBytes = selectedFiles.reduce((acc, f) => acc + f.size, 0);
+      const totalBytes = selectedFiles.reduce((acc, item) => acc + item.file.size, 0);
       if (totalBytes > MAX_TOTAL_SIZE) {
-        showToast('Total file size exceeds 50MB limit. Please remove some files.', 'error');
+        showToast('Total file size exceeds 100MB limit. Please remove some files.', 'error');
         return;
       }
 
@@ -231,8 +382,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (password) formData.append('password', password);
       if (downloadLimit) formData.append('downloadLimit', downloadLimit);
 
-      selectedFiles.forEach(file => {
-        formData.append('files', file);
+      selectedFiles.forEach(item => {
+        formData.append('files', item.file);
       });
 
       // UI state: uploading
@@ -247,6 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Execute upload with XHR for real upload progress
       const xhr = new XMLHttpRequest();
+      activeXhr = xhr;
       xhr.open('POST', '/api/shares');
 
       xhr.upload.onprogress = (event) => {
@@ -258,6 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       xhr.onload = () => {
+        activeXhr = null;
         uploadBtn.disabled = false;
         uploadBtn.textContent = 'Upload & Generate Code';
 
@@ -290,17 +443,22 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       xhr.onerror = () => {
+        activeXhr = null;
         uploadBtn.disabled = false;
         uploadBtn.textContent = 'Upload & Generate Code';
         if (progressContainer) progressContainer.style.display = 'none';
         showToast('Network error while uploading. Please check your connection and retry.', 'error');
       };
 
+      xhr.onabort = () => {
+        activeXhr = null;
+      };
+
       xhr.send(formData);
     });
   }
 
-  // 5. Show Success Screen
+  // 6. Show Success Screen
   async function showSuccessScreen(data) {
     if (uploadCard) uploadCard.style.display = 'none';
     if (successCard) successCard.style.display = 'block';
@@ -332,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 6. Copy Code Button
+  // 7. Copy Code Button
   if (copyCodeBtn) {
     copyCodeBtn.addEventListener('click', () => {
       if (currentShareCode) {
@@ -341,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 7. Copy Share Link Button
+  // 8. Copy Share Link Button
   if (copyLinkBtn) {
     copyLinkBtn.addEventListener('click', () => {
       if (currentShareCode) {
@@ -351,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 8. Delete Share Button
+  // 9. Delete Share Button
   if (deleteShareBtn) {
     deleteShareBtn.addEventListener('click', async () => {
       if (!currentShareCode || !currentDeletionToken) return;
@@ -390,9 +548,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 9. "Create Another Share" button
+  // 10. "Create Another Share" button
   if (newShareBtn) {
     newShareBtn.addEventListener('click', () => {
+      // Clean up object URLs
+      selectedFiles.forEach(item => {
+        if (item.previewUrl) {
+          URL.revokeObjectURL(item.previewUrl);
+        }
+      });
       selectedFiles = [];
       if (textContent) textContent.value = '';
       if (charCounter) charCounter.textContent = '0 / 100,000 characters';
@@ -406,5 +570,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (uploadCard) uploadCard.style.display = 'block';
     });
   }
-});
 
+  // Cleanup on unload
+  window.addEventListener('beforeunload', () => {
+    selectedFiles.forEach(item => {
+      if (item.previewUrl) {
+        URL.revokeObjectURL(item.previewUrl);
+      }
+    });
+  });
+});
