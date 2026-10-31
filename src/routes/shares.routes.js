@@ -1,5 +1,6 @@
 import express from 'express';
 import crypto from 'crypto';
+import path from 'path';
 import { createRequire } from 'module';
 import QRCode from 'qrcode';
 
@@ -152,13 +153,41 @@ router.get('/:code/qr', async (req, res, next) => {
 });
 
 /**
- * GET /api/shares/:code/files/:fileId/download - Download a single file
+ * GET /api/shares/:code/files/:fileId/signed-url - Generate short-lived signed download URL
+ */
+router.get('/:code/files/:fileId/signed-url', codeGuessLimiter, async (req, res, next) => {
+  try {
+    const { code, fileId } = req.params;
+    const token = extractAuthToken(req);
+    const ipHash = getIpHash(req);
+    const expiresIn = parseInt(req.query.expiresIn || '60', 10);
+
+    const result = await shareService.getSignedDownloadUrl(code, fileId, token, ipHash, expiresIn);
+
+    res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/shares/:code/files/:fileId/download - Download a single file (stream or signed redirect)
  */
 router.get('/:code/files/:fileId/download', async (req, res, next) => {
   try {
     const { code, fileId } = req.params;
     const token = extractAuthToken(req);
     const ipHash = getIpHash(req);
+
+    // Support redirect to short-lived signed URL if requested
+    if (req.query.redirect === 'true' || req.query.signed === 'true') {
+      const expiresIn = parseInt(req.query.expiresIn || '60', 10);
+      const result = await shareService.getSignedDownloadUrl(code, fileId, token, ipHash, expiresIn);
+      return res.redirect(302, result.signedUrl);
+    }
 
     const { file } = await shareService.getFileDownload(code, fileId, token, false, ipHash);
 
@@ -171,6 +200,45 @@ router.get('/:code/files/:fileId/download', async (req, res, next) => {
     res.setHeader('Content-Length', file.file_size);
     res.setHeader('X-Content-Type-Options', 'nosniff');
 
+    stream.pipe(res);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/shares/local-storage/download - Download file via verified local signed URL
+ */
+router.get('/local-storage/download', async (req, res, next) => {
+  try {
+    const { path: storagePath, expires, sig } = req.query;
+    if (!storagePath || !expires || !sig) {
+      return res.status(400).json({ success: false, error: 'Missing signed download parameters.' });
+    }
+
+    const expiresTimestamp = parseInt(expires, 10);
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (isNaN(expiresTimestamp) || currentTimestamp > expiresTimestamp) {
+      return res.status(410).json({ success: false, error: 'Signed download URL has expired.' });
+    }
+
+    // Verify HMAC signature
+    const dataToSign = `${storagePath}:${expires}`;
+    const expectedSig = crypto.createHmac('sha256', config.shareTokenSecret).update(dataToSign).digest('hex');
+    const sigBuffer = Buffer.from(sig);
+    const expectedBuffer = Buffer.from(expectedSig);
+
+    if (sigBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(sigBuffer, expectedBuffer)) {
+      return res.status(403).json({ success: false, error: 'Invalid or tampered signed URL signature.' });
+    }
+
+    const stream = await storage.getFileStream(storagePath);
+    const requestedFilename = req.query.filename ? decodeURIComponent(req.query.filename) : null;
+    const defaultFilename = path.posix.basename(storagePath.replace(/\\/g, '/')).replace(/^[a-f0-9-]+-/, '');
+    const filename = requestedFilename || defaultFilename;
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(filename)}"`);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
     stream.pipe(res);
   } catch (err) {
     next(err);

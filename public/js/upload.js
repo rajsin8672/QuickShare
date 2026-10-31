@@ -1,9 +1,10 @@
-import { formatBytes, formatDateTime, showToast, copyToClipboard, initMobileNav } from './common.js';
+import { formatBytes, formatDateTime, showToast, copyToClipboard, initMobileNav, initPasswordToggle } from './common.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
 
   // State
+  let activeShareMode = 'files'; // 'files' | 'text' | 'both'
   let selectedFiles = []; // Array of { file, previewUrl, category, meta }
   const MAX_FILE_COUNT = 10;
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
@@ -14,6 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   // DOM Elements
+  const shareTypeTabs = document.querySelectorAll('.share-type-tab');
+  const filesSectionPanel = document.getElementById('files-section-panel');
+  const textSectionPanel = document.getElementById('text-section-panel');
+
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('file-input');
   const browseBtn = document.getElementById('browse-btn');
@@ -24,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const advancedToggle = document.getElementById('advanced-toggle');
   const advancedAccordion = document.getElementById('advanced-accordion');
   const passwordInput = document.getElementById('password-input');
+  const toggleUploadPasswordBtn = document.getElementById('toggle-upload-password-btn');
   const downloadLimitInput = document.getElementById('download-limit-input');
   const uploadBtn = document.getElementById('upload-btn');
   const cancelUploadBtn = document.getElementById('cancel-upload-btn');
@@ -50,6 +56,65 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentShareCode = null;
   let currentDeletionToken = null;
   let activeXhr = null;
+
+  // Initialize Password View / Hide Toggle
+  initPasswordToggle(passwordInput, toggleUploadPasswordBtn);
+
+  // Setup Share Content Mode Tabs (Separate Files and Text Sections)
+  function updateUploadButtonText() {
+    if (!uploadBtn) return;
+    if (activeShareMode === 'files') {
+      uploadBtn.innerHTML = `
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+        </svg>
+        Upload Files &amp; Generate Code
+      `;
+    } else if (activeShareMode === 'text') {
+      uploadBtn.innerHTML = `
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+        </svg>
+        Share Text &amp; Generate Code
+      `;
+    } else {
+      uploadBtn.innerHTML = `
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+        </svg>
+        Share Content &amp; Generate Code
+      `;
+    }
+  }
+
+  shareTypeTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const mode = tab.dataset.mode;
+      if (!mode) return;
+
+      activeShareMode = mode;
+      shareTypeTabs.forEach(t => {
+        const isActive = t === tab;
+        t.classList.toggle('active', isActive);
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      if (mode === 'files') {
+        if (filesSectionPanel) filesSectionPanel.style.display = 'block';
+        if (textSectionPanel) textSectionPanel.style.display = 'none';
+      } else if (mode === 'text') {
+        if (filesSectionPanel) filesSectionPanel.style.display = 'none';
+        if (textSectionPanel) textSectionPanel.style.display = 'block';
+        if (textContent) textContent.focus();
+      } else {
+        // Both files and text sections visible
+        if (filesSectionPanel) filesSectionPanel.style.display = 'block';
+        if (textSectionPanel) textSectionPanel.style.display = 'block';
+      }
+
+      updateUploadButtonText();
+    });
+  });
 
   // 1. Text input character counter
   if (textContent && charCounter) {
@@ -342,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activeXhr.abort();
         activeXhr = null;
         uploadBtn.disabled = false;
-        uploadBtn.textContent = 'Upload & Generate Code';
+        updateUploadButtonText();
         if (progressContainer) progressContainer.style.display = 'none';
         showToast('Upload canceled.', 'info');
       }
@@ -355,14 +420,29 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
 
       const text = (textContent?.value || '').trim();
-      if (selectedFiles.length === 0 && !text) {
-        showToast('Please select at least one file or enter a text message.', 'error');
-        return;
+
+      // Validate according to the active section mode
+      if (activeShareMode === 'files') {
+        if (selectedFiles.length === 0) {
+          showToast('Please select at least one file to upload.', 'error');
+          return;
+        }
+      } else if (activeShareMode === 'text') {
+        if (!text) {
+          showToast('Please enter a text message to share.', 'error');
+          return;
+        }
+      } else {
+        // Both mode
+        if (selectedFiles.length === 0 && !text) {
+          showToast('Please select at least one file or enter a text message.', 'error');
+          return;
+        }
       }
 
       // Check total size
       const totalBytes = selectedFiles.reduce((acc, item) => acc + item.file.size, 0);
-      if (totalBytes > MAX_TOTAL_SIZE) {
+      if (activeShareMode !== 'text' && totalBytes > MAX_TOTAL_SIZE) {
         showToast('Total file size exceeds 100MB limit. Please remove some files.', 'error');
         return;
       }
@@ -377,14 +457,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Prepare FormData
       const formData = new FormData();
-      formData.append('textContent', text);
+
+      // Attach text if in text or both mode
+      if (activeShareMode === 'text' || activeShareMode === 'both') {
+        formData.append('textContent', text);
+      } else {
+        formData.append('textContent', '');
+      }
+
       formData.append('expiryMinutes', expiryMinutes);
       if (password) formData.append('password', password);
       if (downloadLimit) formData.append('downloadLimit', downloadLimit);
 
-      selectedFiles.forEach(item => {
-        formData.append('files', item.file);
-      });
+      // Attach files if in files or both mode
+      if (activeShareMode === 'files' || activeShareMode === 'both') {
+        selectedFiles.forEach(item => {
+          formData.append('files', item.file);
+        });
+      }
 
       // UI state: uploading
       uploadBtn.disabled = true;
@@ -445,7 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
       xhr.onerror = () => {
         activeXhr = null;
         uploadBtn.disabled = false;
-        uploadBtn.textContent = 'Upload & Generate Code';
+        updateUploadButtonText();
         if (progressContainer) progressContainer.style.display = 'none';
         showToast('Network error while uploading. Please check your connection and retry.', 'error');
       };
@@ -560,10 +650,20 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedFiles = [];
       if (textContent) textContent.value = '';
       if (charCounter) charCounter.textContent = '0 / 100,000 characters';
-      if (passwordInput) passwordInput.value = '';
+      if (passwordInput) {
+        passwordInput.value = '';
+        passwordInput.type = 'password';
+        const eyeIcon = toggleUploadPasswordBtn?.querySelector('.eye-icon');
+        const eyeSlashIcon = toggleUploadPasswordBtn?.querySelector('.eye-slash-icon');
+        if (eyeIcon && eyeSlashIcon) {
+          eyeIcon.style.display = 'block';
+          eyeSlashIcon.style.display = 'none';
+        }
+      }
       if (downloadLimitInput) downloadLimitInput.value = '';
       if (totalSizeInfo) totalSizeInfo.textContent = '';
       if (progressContainer) progressContainer.style.display = 'none';
+      updateUploadButtonText();
       renderSelectedFiles();
 
       if (successCard) successCard.style.display = 'none';

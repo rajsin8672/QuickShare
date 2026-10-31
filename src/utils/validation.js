@@ -107,6 +107,29 @@ export function verifyFileSignature(buffer, mimeType) {
 }
 
 /**
+ * Detect and repair UTF-8 strings that were mis-decoded as Latin-1 by multipart parsers (e.g. Multer)
+ * @param {string} str 
+ * @returns {string} Corrected UTF-8 string
+ */
+export function fixUtf8Encoding(str) {
+  if (!str || typeof str !== 'string') return str || '';
+  // If string already has characters outside Latin-1 range, it is already decoded Unicode
+  if (/[^\x00-\xFF]/.test(str)) {
+    return str;
+  }
+  // Check if it contains UTF-8 byte sequences mis-decoded as Latin-1 (lead bytes 0xC2-0xF4 followed by 0x80-0xBF)
+  if (/[\xC2-\xF4][\x80-\xBF]/.test(str)) {
+    try {
+      const decoded = Buffer.from(str, 'latin1').toString('utf8');
+      if (!decoded.includes('\uFFFD') && decoded !== str) {
+        return decoded;
+      }
+    } catch (_) {}
+  }
+  return str;
+}
+
+/**
  * Sanitize filename to prevent directory traversal and special character injection
  * @param {string} originalName 
  * @returns {string} Safe filename
@@ -116,15 +139,19 @@ export function sanitizeFilename(originalName) {
     return 'file_' + Date.now();
   }
 
+  // Fix UTF-8 encoding if mangled by multipart form parser
+  const fixed = fixUtf8Encoding(originalName);
+
   // Normalize backslashes to forward slashes for cross-platform compatibility
-  const normalized = originalName.replace(/\\/g, '/');
+  const normalized = fixed.replace(/\\/g, '/');
   // Extract base filename without directories
   const basename = path.posix.basename(normalized);
 
-  // Replace null bytes, control characters, and slashes
+  // Replace null bytes, control characters, bidirectional overrides, and problematic characters
   let cleanName = basename
     .replace(/[\/\\]/g, '')
-    .replace(/[\x00-\x1f\x7f-\x9f]/g, '')
+    .replace(/[\x00-\x1f\x7f-\x9f\u200B-\u200D\u202A-\u202E\uFEFF]/g, '')
+    .replace(/["*:<>?|\x7f]/g, '_')
     .trim();
 
   // Remove leading dots to prevent hidden files

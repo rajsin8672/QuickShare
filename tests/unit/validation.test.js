@@ -17,6 +17,13 @@ describe('Validation and Sanitization Utilities', () => {
     assert.equal(sanitizeFilename('normal-file.png'), 'normal-file.png');
     assert.equal(sanitizeFilename('.hidden.txt'), 'hidden.txt');
     assert.ok(sanitizeFilename('').startsWith('file_'));
+
+    // Safe handling of spaces, parentheses, unicode, and control characters
+    assert.equal(sanitizeFilename('My Vacation Photo (1).png'), 'My Vacation Photo (1).png');
+    assert.equal(sanitizeFilename('café_résumé.pdf'), 'café_résumé.pdf');
+    assert.equal(sanitizeFilename('日本語_テスト.png'), '日本語_テスト.png');
+    assert.equal(sanitizeFilename('dangerous\x00file\x1f\u202E.png'), 'dangerousfile.png');
+    assert.equal(sanitizeFilename('file"name*test?.pdf'), 'file_name_test_.pdf');
   });
 
   it('should validate allowed file extensions and MIME types including GIF and videos', () => {

@@ -137,3 +137,25 @@ export function initFaqAccordions() {
   });
 }
 
+// Initialize password show/hide view toggle
+export function initPasswordToggle(inputEl, toggleBtnEl) {
+  if (!inputEl || !toggleBtnEl) return;
+
+  const eyeIcon = toggleBtnEl.querySelector('.eye-icon');
+  const eyeSlashIcon = toggleBtnEl.querySelector('.eye-slash-icon');
+
+  toggleBtnEl.addEventListener('click', (e) => {
+    e.preventDefault();
+    const isPassword = inputEl.type === 'password';
+    inputEl.type = isPassword ? 'text' : 'password';
+
+    toggleBtnEl.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+    toggleBtnEl.setAttribute('title', isPassword ? 'Hide password' : 'Show password');
+
+    if (eyeIcon && eyeSlashIcon) {
+      eyeIcon.style.display = isPassword ? 'none' : 'block';
+      eyeSlashIcon.style.display = isPassword ? 'block' : 'none';
+    }
+  });
+}
+

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { Readable } from 'stream';
@@ -30,9 +31,13 @@ class LocalStorageService {
     return { path: storagePath, size: buffer.length };
   }
 
-  async createSignedUrl(storagePath, expiresInSeconds = 60) {
-    // In local mode, return a local API endpoint URL relative to the server
-    return `/api/storage/local-download?path=${encodeURIComponent(storagePath)}`;
+  async createSignedUrl(storagePath, expiresInSeconds = 60, downloadFilename = '') {
+    // Generate an HMAC signed local URL valid for expiresInSeconds
+    const expires = Math.floor(Date.now() / 1000) + expiresInSeconds;
+    const dataToSign = `${storagePath}:${expires}`;
+    const sig = crypto.createHmac('sha256', config.shareTokenSecret).update(dataToSign).digest('hex');
+    const fnParam = downloadFilename ? `&filename=${encodeURIComponent(downloadFilename)}` : '';
+    return `/api/shares/local-storage/download?path=${encodeURIComponent(storagePath)}&expires=${expires}&sig=${sig}${fnParam}`;
   }
 
   async getFileBuffer(storagePath) {
@@ -87,10 +92,11 @@ class SupabaseStorageService {
     return data;
   }
 
-  async createSignedUrl(storagePath, expiresInSeconds = 60) {
+  async createSignedUrl(storagePath, expiresInSeconds = 60, downloadFilename = '') {
+    const options = downloadFilename ? { download: downloadFilename } : undefined;
     const { data, error } = await this.client.storage
       .from(this.bucketName)
-      .createSignedUrl(storagePath, expiresInSeconds);
+      .createSignedUrl(storagePath, expiresInSeconds, options);
 
     if (error) {
       throw new Error(`Failed to generate signed download URL: ${error.message}`);
@@ -135,12 +141,13 @@ class SupabaseStorageService {
 
 // Instantiate storage service
 let storageInstance;
+const useLiveStorage = config.supabase.isConfigured && (process.env.NODE_ENV !== 'test' || process.env.TEST_LIVE_SUPABASE === 'true');
 
-if (config.supabase.isConfigured) {
+if (useLiveStorage) {
   try {
     const supabaseClient = createClient(
       config.supabase.url,
-      config.supabase.serviceRoleKey,
+      config.supabase.key,
       {
         auth: {
           persistSession: false,
@@ -159,15 +166,28 @@ if (config.supabase.isConfigured) {
 }
 
 /**
- * Generate a safe internal storage path for an uploaded file
- * @param {string} shareId 
- * @param {string} fileId 
- * @param {string} originalFilename 
- * @returns {string} Safe storage path
+ * Generate a safe internal storage path for an uploaded file in Supabase Storage or Local Storage.
+ * Ensures all path segments contain only strict valid characters [a-zA-Z0-9_-] and lowercase ASCII extension.
+ * Collision resistance is guaranteed by the UUIDs.
+ * 
+ * @param {string} shareId - Unique share identifier (UUID)
+ * @param {string} fileId - Unique file identifier (UUID)
+ * @param {string} [originalFilename] - Original filename to extract safe file extension from
+ * @returns {string} Safe storage object key, e.g. "shares/<shareId>/<fileId>.png"
  */
-export function buildStoragePath(shareId, fileId, originalFilename) {
-  const safeName = sanitizeFilename(originalFilename);
-  return `shares/${shareId}/${fileId}-${safeName}`;
+export function buildStoragePath(shareId, fileId, originalFilename = '') {
+  const cleanShareId = String(shareId || '').replace(/[^a-zA-Z0-9_-]/g, '') || crypto.randomUUID();
+  const cleanFileId = String(fileId || '').replace(/[^a-zA-Z0-9_-]/g, '') || crypto.randomUUID();
+
+  let safeExt = '';
+  if (originalFilename && typeof originalFilename === 'string') {
+    const rawExt = path.posix.extname(originalFilename.replace(/\\/g, '/')).toLowerCase();
+    if (/^\.[a-z0-9]+$/.test(rawExt)) {
+      safeExt = rawExt;
+    }
+  }
+
+  return `shares/${cleanShareId}/${cleanFileId}${safeExt}`;
 }
 
 export const storage = storageInstance;

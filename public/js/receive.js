@@ -1,4 +1,4 @@
-import { formatBytes, formatDateTime, formatTimeRemaining, showToast, copyToClipboard, initMobileNav } from './common.js';
+import { formatBytes, formatDateTime, formatTimeRemaining, showToast, copyToClipboard, initMobileNav, initPasswordToggle } from './common.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
@@ -17,8 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const passwordCard = document.getElementById('password-card');
   const passwordInput = document.getElementById('share-password');
+  const toggleReceivePasswordBtn = document.getElementById('toggle-receive-password-btn');
   const submitPasswordBtn = document.getElementById('submit-password-btn');
   const passwordError = document.getElementById('password-error');
+
+  // Initialize password toggle
+  initPasswordToggle(passwordInput, toggleReceivePasswordBtn);
 
   const contentCard = document.getElementById('content-card');
   const shareCodeHeader = document.getElementById('share-code-header');
@@ -145,6 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
       passwordCard.style.display = 'block';
       if (passwordInput) {
         passwordInput.value = '';
+        passwordInput.type = 'password';
+        const eyeIcon = toggleReceivePasswordBtn?.querySelector('.eye-icon');
+        const eyeSlashIcon = toggleReceivePasswordBtn?.querySelector('.eye-slash-icon');
+        if (eyeIcon && eyeSlashIcon) {
+          eyeIcon.style.display = 'block';
+          eyeSlashIcon.style.display = 'none';
+        }
         passwordInput.focus();
       }
       if (passwordError) passwordError.style.display = 'none';

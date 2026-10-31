@@ -98,9 +98,27 @@ export class ShareService {
       throw err;
     }
 
-    // 7. Generate creator deletion token
+    // 7. Generate creator deletion token and share ID
+    const shareId = crypto.randomUUID();
     const deletionToken = generateDeletionToken();
     const deletionTokenHash = hashToken(deletionToken);
+
+    // Pre-calculate storage paths for files using safe UUID keys and preserved filenames
+    const preparedFiles = files.map(file => {
+      const fileId = crypto.randomUUID();
+      const safeDisplayName = sanitizeFilename(file.originalname);
+      const storagePath = buildStoragePath(shareId, fileId, file.originalname);
+      const category = getFileCategory(file.originalname, file.mimetype);
+      return {
+        fileId,
+        safeDisplayName,
+        storagePath,
+        category,
+        file
+      };
+    });
+
+    const primaryStoragePath = preparedFiles.length > 0 ? preparedFiles[0].storagePath : null;
 
     // 8. Database Record Creation
     let createdShare = null;
@@ -108,6 +126,7 @@ export class ShareService {
 
     try {
       createdShare = await db.createShare({
+        id: shareId,
         shareCode,
         deletionTokenHash,
         textContent: trimmedText || null,
@@ -115,27 +134,28 @@ export class ShareService {
         expiresAt,
         downloadLimit: validatedLimit,
         fileCount: files.length,
-        totalSizeBytes
+        totalSizeBytes,
+        files: preparedFiles.map(p => ({
+          originalname: p.safeDisplayName,
+          mimetype: p.file.mimetype,
+          size: p.file.size
+        })),
+        primaryStoragePath
       });
 
       // 9. Upload files to private storage and insert file records
       const fileRecordsToInsert = [];
-      for (const file of files) {
-        const fileId = crypto.randomUUID();
-        const safeName = sanitizeFilename(file.originalname);
-        const storagePath = buildStoragePath(createdShare.id, fileId, safeName);
-
+      for (const prep of preparedFiles) {
         // Upload to storage bucket
-        await storage.uploadFile(storagePath, file.buffer, file.mimetype);
-        uploadedStoragePaths.push(storagePath);
+        await storage.uploadFile(prep.storagePath, prep.file.buffer, prep.file.mimetype);
+        uploadedStoragePaths.push(prep.storagePath);
 
-        const category = getFileCategory(file.originalname, file.mimetype);
         fileRecordsToInsert.push({
-          storagePath,
-          originalFilename: safeName,
-          mimeType: file.mimetype,
-          fileSize: file.size,
-          fileCategory: category
+          storagePath: prep.storagePath,
+          originalFilename: prep.safeDisplayName,
+          mimeType: prep.file.mimetype,
+          fileSize: prep.file.size,
+          fileCategory: prep.category
         });
       }
 
@@ -413,6 +433,69 @@ export class ShareService {
     return {
       file,
       share
+    };
+  }
+
+  /**
+   * Authorize and generate a short-lived signed download URL
+   */
+  async getSignedDownloadUrl(rawCode, fileId, authToken, ipHash = null, expiresInSeconds = 60) {
+    const code = normalizeShareCode(rawCode);
+    const share = await db.getShareByCode(code);
+    if (!share) {
+      const err = new Error('Share not found.');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    if (share.status === 'deleted') {
+      const err = new Error('This share has been deleted.');
+      err.statusCode = 410;
+      throw err;
+    }
+
+    if (new Date(share.expires_at) <= new Date() || share.status === 'expired') {
+      await db.setShareExpired(share.id);
+      const err = new Error('This share has expired.');
+      err.statusCode = 410;
+      throw err;
+    }
+
+    // Password verification
+    if (share.password_hash) {
+      if (!verifyShareAccessToken(authToken, code, config.shareTokenSecret)) {
+        const err = new Error('Unauthorized. Password authentication required for this share.');
+        err.statusCode = 401;
+        throw err;
+      }
+    }
+
+    const file = await db.getShareFileById(share.id, fileId);
+    if (!file) {
+      const err = new Error('File not found in this share.');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    // Atomically increment download count
+    const limitResult = await db.incrementDownloadCount(share.id);
+    if (!limitResult.success) {
+      const err = new Error('Download limit reached for this share.');
+      err.statusCode = 410;
+      throw err;
+    }
+    await db.recordDownloadEvent(share.id, file.id, 'single_file_signed_url', ipHash);
+
+    // Constrain expiresIn between 10s and 300s (default: 60s)
+    const validExpires = Math.min(Math.max(Number(expiresInSeconds) || 60, 10), 300);
+    const signedUrl = await storage.createSignedUrl(file.storage_path, validExpires, file.original_filename);
+
+    return {
+      signedUrl,
+      expiresInSeconds: validExpires,
+      filename: file.original_filename,
+      mimeType: file.mime_type,
+      fileSize: file.file_size
     };
   }
 

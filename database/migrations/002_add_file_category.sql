@@ -15,3 +15,4 @@ WHERE file_category IS NULL OR file_category = 'document';
 
 -- Index for file_category queries
 CREATE INDEX IF NOT EXISTS idx_share_files_category ON share_files(file_category);
+
