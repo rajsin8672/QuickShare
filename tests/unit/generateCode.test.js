@@ -63,3 +63,4 @@ describe('Code Generation and Cryptography Utilities', () => {
     assert.ok(!verifyShareAccessToken(expiredToken, shareCode, secret));
   });
 });
+

@@ -39,3 +39,4 @@ CREATE POLICY "Deny anonymous access on shared-files" ON storage.objects
     FOR ALL
     TO anon
     USING (bucket_id = 'shared-files' AND false);
+

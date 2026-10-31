@@ -107,3 +107,4 @@ export function verifyShareAccessToken(token, shareCode, secret) {
     return false;
   }
 }
+

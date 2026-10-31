@@ -393,3 +393,4 @@ QuickShare is ready for deployment on [Render](https://render.com).
 ## 🤝 Contributing & License
 
 QuickShare is distributed under the MIT License. See [Terms of Service](/terms.html) and [Privacy Policy](/privacy.html) for usage policies.
+

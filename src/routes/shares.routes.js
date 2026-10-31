@@ -1,7 +1,10 @@
 import express from 'express';
 import crypto from 'crypto';
-import { ZipArchive } from 'archiver';
+import { createRequire } from 'module';
 import QRCode from 'qrcode';
+
+const require = createRequire(import.meta.url);
+const archiver = require('archiver');
 import { shareService } from '../services/share.service.js';
 import { storage } from '../services/storage.service.js';
 import { upload, validateTotalUploadSize } from '../middleware/uploadValidation.js';
@@ -222,7 +225,7 @@ router.get('/:code/download-all', async (req, res, next) => {
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('X-Content-Type-Options', 'nosniff');
 
-    const archive = new ZipArchive({
+    const archive = archiver('zip', {
       zlib: { level: 6 }
     });
 
