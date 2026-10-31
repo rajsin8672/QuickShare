@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload & Share Files | QuickShare</title>
+  <meta name="description" content="Upload documents, images, or enter text to generate a secure, ephemeral sharing code.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="/" class="brand-logo" aria-label="QuickShare Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </div>
+        <span>QuickShare</span>
+      </a>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/upload.html" class="nav-link active">Share Files</a></li>
+          <li><a href="/receive.html" class="nav-link">Receive Files</a></li>
+          <li><a href="/about.html" class="nav-link">About</a></li>
+          <li class="nav-actions">
+            <a href="/receive.html" class="btn btn-secondary btn-sm">Receive Files</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container container-narrow">
+      
+      <!-- Upload Form Card -->
+      <div class="card" id="upload-card">
+        <div class="card-header">
+          <h1 class="card-title">Share Files or Text</h1>
+          <p class="card-subtitle">Choose files, set expiration, and generate your instant sharing code.</p>
+        </div>
+
+        <!-- File Upload Area -->
+        <div class="form-group">
+          <label class="form-label">Upload Files (Optional if sharing text)</label>
+          <div class="dropzone" id="dropzone">
+            <svg class="dropzone-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <p class="dropzone-text">Drag and drop files here, or <button type="button" class="btn btn-outline-primary btn-sm" id="browse-btn" style="margin-left: 4px;">Browse Files</button></p>
+            <p class="dropzone-subtext">Supported formats: PDF, JPG, PNG, WEBP, TXT, DOC, DOCX. Up to 10 files (25MB each, 50MB total).</p>
+            <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.txt,.doc,.docx" style="display: none;">
+          </div>
+
+          <!-- Selected Files List -->
+          <div class="selected-files-container" id="selected-files-list"></div>
+          <div id="total-size-info" class="form-hint" style="font-weight: 500;"></div>
+        </div>
+
+        <!-- Text Sharing Area -->
+        <div class="form-group">
+          <label for="text-content" class="form-label">Text Message / Notes (Optional)</label>
+          <textarea id="text-content" class="form-control" maxlength="100000" placeholder="Type or paste any notes, links, credentials, or code snippets you want to securely transfer..."></textarea>
+          <div class="char-counter" id="char-counter">0 / 100,000 characters</div>
+        </div>
+
+        <!-- Expiration Settings -->
+        <div class="form-group">
+          <label class="form-label">Expiration Period</label>
+          <div class="expiration-grid">
+            <div>
+              <input type="radio" name="expiryMinutes" id="exp-30m" value="30" class="expiry-radio-input" checked>
+              <label for="exp-30m" class="expiry-radio-label">30 Minutes</label>
+            </div>
+            <div>
+              <input type="radio" name="expiryMinutes" id="exp-1h" value="60" class="expiry-radio-input">
+              <label for="exp-1h" class="expiry-radio-label">1 Hour</label>
+            </div>
+            <div>
+              <input type="radio" name="expiryMinutes" id="exp-6h" value="360" class="expiry-radio-input">
+              <label for="exp-6h" class="expiry-radio-label">6 Hours</label>
+            </div>
+            <div>
+              <input type="radio" name="expiryMinutes" id="exp-24h" value="1440" class="expiry-radio-input">
+              <label for="exp-24h" class="expiry-radio-label">24 Hours</label>
+            </div>
+            <div>
+              <input type="radio" name="expiryMinutes" id="exp-7d" value="10080" class="expiry-radio-input">
+              <label for="exp-7d" class="expiry-radio-label">7 Days</label>
+            </div>
+          </div>
+          <p class="form-hint">Files and messages are permanently purged from storage once the expiration is reached.</p>
+        </div>
+
+        <!-- Advanced Security Settings Accordion -->
+        <div class="advanced-accordion" id="advanced-accordion">
+          <button type="button" class="advanced-toggle" id="advanced-toggle">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+              Advanced Security & Limits (Optional)
+            </span>
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="advanced-body">
+            <div class="form-group">
+              <label for="password-input" class="form-label">Password Protection</label>
+              <input type="password" id="password-input" class="form-control" placeholder="Enter a password to require from receiver" autocomplete="new-password">
+              <p class="form-hint">Receivers must provide this exact password before viewing or downloading files.</p>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="download-limit-input" class="form-label">Maximum Successful Downloads</label>
+              <input type="number" id="download-limit-input" class="form-control" min="1" max="1000" placeholder="e.g. 1 (Leave blank for unlimited)">
+              <p class="form-hint">The share will automatically expire after reaching this number of downloads.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-container" id="progress-container">
+          <div class="progress-header">
+            <span id="progress-status">Uploading files...</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button type="button" class="btn btn-primary btn-lg" id="upload-btn" style="width: 100%;">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+          </svg>
+          Upload & Generate Code
+        </button>
+      </div>
+
+      <!-- Success Screen Card (Initially Hidden) -->
+      <div class="card success-card" id="success-card" style="display: none;">
+        <div class="success-badge">
+          <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--text);">Files Shared Successfully!</h2>
+        <p style="color: var(--text-muted); margin-top: 6px;">Give this 6-character code to your receiver or share the link directly.</p>
+
+        <!-- Prominent Code Display -->
+        <div class="share-code-display">
+          <div class="share-code-label">Sharing Code</div>
+          <div class="share-code-value" id="share-code-text">------</div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="share-actions-row">
+          <button type="button" class="btn btn-primary" id="copy-code-btn">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            Copy Code
+          </button>
+          <button type="button" class="btn btn-secondary" id="copy-link-btn">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+            </svg>
+            Copy Share Link
+          </button>
+        </div>
+
+        <!-- QR Code -->
+        <div class="qr-container">
+          <img id="qr-code-img" class="qr-img" src="" alt="Share QR Code">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Scan with camera to open</div>
+        </div>
+
+        <!-- Share Metadata Stats -->
+        <div class="meta-stats-grid">
+          <div class="meta-stat-item">
+            <div class="meta-stat-label">Expires At</div>
+            <div class="meta-stat-value" id="stat-expires">--</div>
+          </div>
+          <div class="meta-stat-item">
+            <div class="meta-stat-label">Files Shared</div>
+            <div class="meta-stat-value" id="stat-files">0</div>
+          </div>
+          <div class="meta-stat-item">
+            <div class="meta-stat-label">Total Size</div>
+            <div class="meta-stat-value" id="stat-size">0 Bytes</div>
+          </div>
+          <div class="meta-stat-item">
+            <div class="meta-stat-label">Download Limit</div>
+            <div class="meta-stat-value" id="stat-limit">Unlimited</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 24px; flex-wrap: wrap; gap: 12px;">
+          <button type="button" class="btn btn-danger btn-sm" id="delete-share-btn">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+            Delete Share Now
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="new-share-btn">
+            Create Another Share
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security. <a href="/privacy.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Privacy Policy</a> &bull; <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/upload.js"></script>
+</body>
+</html>

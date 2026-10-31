@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About QuickShare | Architecture & Security</title>
+  <meta name="description" content="Learn about QuickShare's design principles, security architecture, and ephemeral file sharing technology.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="/" class="brand-logo" aria-label="QuickShare Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </div>
+        <span>QuickShare</span>
+      </a>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/upload.html" class="nav-link">Share Files</a></li>
+          <li><a href="/receive.html" class="nav-link">Receive Files</a></li>
+          <li><a href="/about.html" class="nav-link active">About</a></li>
+          <li class="nav-actions">
+            <a href="/upload.html" class="btn btn-primary btn-sm">Share Files</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container container-narrow">
+      <div class="card" style="margin-bottom: 30px;">
+        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px;">About QuickShare</h1>
+        <p style="font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px;">
+          QuickShare was engineered from the ground up to solve a universal friction point: transferring documents, pictures, and notes between disparate devices, operating systems, and users without requiring user registration, email invitations, or permanent storage footprints.
+        </p>
+
+        <h2 style="font-size: 1.35rem; font-weight: 700; margin: 28px 0 12px;" id="architecture">Technical Architecture</h2>
+        <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">
+          QuickShare employs a modern, lightweight, and decoupled architecture separating frontend presentation, backend REST services, database state, and object storage:
+        </p>
+        <ul style="margin-left: 20px; color: var(--text); line-height: 1.8; margin-bottom: 24px;">
+          <li><strong>Frontend:</strong> Clean Vanilla HTML5, CSS3, and JavaScript utilizing the Fetch API, semantic markup, and responsive design systems. No frontend heavyweight frameworks.</li>
+          <li><strong>Backend Engine:</strong> Node.js and Express.js REST API service with Helmet security headers, Multer streaming uploads, and strict rate-limiting layers.</li>
+          <li><strong>Database Tier:</strong> Supabase PostgreSQL with strict Row Level Security (RLS) enforcing backend service-role access only.</li>
+          <li><strong>Object Storage:</strong> Supabase Storage with dedicated private bucket <code style="background: var(--surface-alt); padding: 2px 6px; border-radius: 4px;">shared-files</code>. Public access is disabled at the storage engine level.</li>
+        </ul>
+
+        <h2 style="font-size: 1.35rem; font-weight: 700; margin: 28px 0 12px;" id="security">Security & Privacy Model</h2>
+        <div class="features-grid" style="margin: 20px 0;">
+          <div class="feature-card">
+            <h3 style="font-size: 1rem; font-weight: 700;">Unambiguous Code Alphabet</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Generated codes utilize a custom 32-character base that excludes visually confounding characters (such as 0 vs O, 1 vs I or l), preventing transcription errors across devices.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3 style="font-size: 1rem; font-weight: 700;">Password Hashing</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Optional share passwords are cryptographic hashes salted with bcrypt. Plaintext passwords are never written to the database or logged.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3 style="font-size: 1rem; font-weight: 700;">Zero Permanent Storage</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              An automated, scheduled cleanup service scans for expired shares and purges underlying files from storage and records from the database.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3 style="font-size: 1rem; font-weight: 700;">Brute-Force Shield</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Strict IP-based rate limiting on code verification and download endpoints throttles repeated attempts and prevents dictionary or guessing attacks.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: 32px; padding: 20px; background-color: var(--surface-alt); border-radius: var(--radius-md); border-left: 4px solid var(--primary);">
+          <h4 style="font-weight: 700; margin-bottom: 6px;">Ready to share?</h4>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">Start a new transfer in seconds with no sign-up required.</p>
+          <a href="/upload.html" class="btn btn-primary btn-sm">Upload Files Now</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security. <a href="/privacy.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Privacy Policy</a> &bull; <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initMobileNav } from '/js/common.js';
+    initMobileNav();
+  </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary and local upload storage
+tmp/
+temp/
+uploads/
+
+# Coverage and test artifacts
+coverage/
+.nyc_output/
+
+# IDE / Editor configuration
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj

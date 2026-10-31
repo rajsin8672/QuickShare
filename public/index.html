@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickShare | Instant Code-Based Ephemeral File Sharing</title>
+  <meta name="description" content="Share files and text securely with simple 6-character sharing codes. Ephemeral, private, and automated expiration.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header & Navigation -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="/" class="brand-logo" aria-label="QuickShare Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </div>
+        <span>QuickShare</span>
+      </a>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link active">Home</a></li>
+          <li><a href="/upload.html" class="nav-link">Share Files</a></li>
+          <li><a href="/receive.html" class="nav-link">Receive Files</a></li>
+          <li><a href="/about.html" class="nav-link">About</a></li>
+          <li class="nav-actions">
+            <a href="/upload.html" class="btn btn-primary btn-sm">Share Now</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-pill">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          <span>Private, Ephemeral & Secure</span>
+        </div>
+        <h1 class="hero-title">Share Files Instantly. No Hassle.</h1>
+        <p class="hero-subtitle">
+          Upload documents, images, or quick messages and share them across devices using a clean, 6-character code. No user accounts, zero trackers, and automatic file expiration.
+        </p>
+        <div class="hero-actions">
+          <a href="/upload.html" class="btn btn-primary btn-lg">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+            </svg>
+            Share Files
+          </a>
+          <a href="/receive.html" class="btn btn-secondary btn-lg">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Receive Files
+          </a>
+        </div>
+      </section>
+
+      <!-- How It Works Section -->
+      <section style="margin: 60px 0;">
+        <div style="text-align: center; margin-bottom: 32px;">
+          <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--text);">How QuickShare Works</h2>
+          <p style="color: var(--text-muted); margin-top: 6px;">Three easy steps to move files between any desktop, phone, or colleague.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Upload Content</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Drop your documents, photos, or enter a text message. Choose your desired expiration period from 30 minutes to 7 days.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Get Your Code</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              QuickShare generates an unambiguous 6-character code (or QR code). Only those with the code can access the files.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Download & Done</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              The receiver enters the code to preview files or download them individually or as a single ZIP archive.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Supported Formats Card -->
+      <section style="margin: 60px 0;">
+        <div class="card">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
+            <div>
+              <h3 style="font-size: 1.3rem; font-weight: 700;">Supported File Formats</h3>
+              <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px;">
+                Up to 25MB per file, 50MB per share, and up to 10 files simultaneously.
+              </p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <span class="file-badge badge-pdf" style="padding: 6px 14px; font-size: 0.85rem;">PDF Documents</span>
+              <span class="file-badge badge-image" style="padding: 6px 14px; font-size: 0.85rem;">JPG & PNG</span>
+              <span class="file-badge badge-image" style="padding: 6px 14px; font-size: 0.85rem;">WEBP</span>
+              <span class="file-badge badge-text" style="padding: 6px 14px; font-size: 0.85rem;">TXT Plaintext</span>
+              <span class="file-badge badge-doc" style="padding: 6px 14px; font-size: 0.85rem;">Word DOC / DOCX</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature Grid -->
+      <section style="margin: 60px 0;">
+        <div style="text-align: center; margin-bottom: 32px;">
+          <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--text);">Engineered for Security & Speed</h2>
+          <p style="color: var(--text-muted); margin-top: 6px;">Enterprise-grade protection with consumer-grade simplicity.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700;">Password Protection</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Set an optional password for sensitive transfers. Files remain strictly locked until the recipient authenticates.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700;">Automatic Expiration</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Files purge automatically after your configured expiry window (30m, 1h, 6h, 24h, 7d). No residual data left behind.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700;">Download Limits</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Enforce a maximum number of successful downloads. Once reached, the share automatically self-terminates.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700;">Private Storage</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Files are stored in private Supabase Storage buckets, guarded by backend authorization and temporary signed streams.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700;">In-Browser Previews</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Recipients can safely preview PDFs, image galleries, and plain text notes without downloading first.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700;">Owner Deletion Tokens</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Senders receive a cryptographic owner token to delete shares immediately at any time before expiration.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section style="margin: 60px 0;">
+        <div style="text-align: center; margin-bottom: 32px;">
+          <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--text);">Frequently Asked Questions</h2>
+          <p style="color: var(--text-muted); margin-top: 6px;">Common questions about QuickShare security and features.</p>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Do I need to create an account to share or receive files?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              No account, email, or registration is required. QuickShare is built entirely on anonymous, code-based ephemeral exchanges.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How long are files kept before being deleted?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              The sender chooses an expiration period: 30 minutes (default), 1 hour, 6 hours, 24 hours, or 7 days. Once expired, our automated background cleanup permanently deletes both the file data and database records.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Can I share plain text without uploading any files?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              Yes! QuickShare allows text-only shares, file-only shares, or combined shares containing both a text message and multiple documents.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Are files public or searchable?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              No. Storage buckets are strictly private with Row Level Security (RLS) enabled. Files cannot be indexed or crawled, and downloads require backend authorization against the exact share code.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>What happens if someone tries to guess sharing codes?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              Our backend employs strict rate-limiting and brute-force defenses. An unambiguous 32-character alphabet creates over 1 billion possible combinations for 6-character codes, and repeated incorrect attempts trigger temporary IP bans.
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="brand-logo">
+            <div class="brand-icon">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+            </div>
+            <span>QuickShare</span>
+          </a>
+          <p>
+            Secure, code-based ephemeral file sharing built with vanilla web standards and cloud-native storage.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/upload.html">Share Files</a></li>
+            <li><a href="/receive.html">Receive Files</a></li>
+            <li><a href="/about.html">About QuickShare</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Legal & Policies</h4>
+          <ul class="footer-links">
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+            <li><a href="/terms.html">Terms of Service</a></li>
+            <li><a href="/about.html#security">Security Architecture</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initMobileNav, initFaqAccordions } from '/js/common.js';
+    initMobileNav();
+    initFaqAccordions();
+  </script>
+</body>
+</html>

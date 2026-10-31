@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | QuickShare</title>
+  <meta name="description" content="QuickShare Privacy Policy. We collect zero tracking data and automatically purge files upon expiration.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="/" class="brand-logo" aria-label="QuickShare Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </div>
+        <span>QuickShare</span>
+      </a>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/upload.html" class="nav-link">Share Files</a></li>
+          <li><a href="/receive.html" class="nav-link">Receive Files</a></li>
+          <li><a href="/about.html" class="nav-link">About</a></li>
+          <li class="nav-actions">
+            <a href="/upload.html" class="btn btn-primary btn-sm">Share Files</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container container-narrow">
+      <div class="card">
+        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 8px;">Privacy Policy</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Last updated: October 2026</p>
+
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">1. Information We Collect</h2>
+          <p style="color: var(--text-muted); line-height: 1.7;">
+            QuickShare is designed with data minimization as its primary principle. We do not require accounts, usernames, emails, or personal identification. We only temporarily store the files and text content you explicitly choose to upload, accompanied by metadata such as file sizes and selected expiration timestamps.
+          </p>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">2. Automatic File Expiration & Deletion</h2>
+          <p style="color: var(--text-muted); line-height: 1.7;">
+            All uploaded files and messages are strictly ephemeral. Once the sender's chosen expiration period arrives (ranging from 30 minutes to 7 days), or when the optional download limit is exhausted, the files are deleted from our storage buckets and database records are removed. Senders can also trigger permanent immediate deletion using their owner deletion token.
+          </p>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">3. Storage Security</h2>
+          <p style="color: var(--text-muted); line-height: 1.7;">
+            Uploaded files reside in private cloud storage buckets protected by database Row Level Security. Anonymous users cannot query the directory or inspect bucket listings. Files are only accessible via authenticated API endpoints matching a valid, active sharing code.
+          </p>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">4. Rate Limiting & Abuse Prevention</h2>
+          <p style="color: var(--text-muted); line-height: 1.7;">
+            To defend against brute-force attacks and denial-of-service attempts, we maintain temporary, in-memory rate-limiting counters. IP addresses stored for rate-limiting purposes are anonymized using one-way cryptographic SHA-256 hashes and are never sold or shared with third parties.
+          </p>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">5. Cookies and Trackers</h2>
+          <p style="color: var(--text-muted); line-height: 1.7;">
+            QuickShare does not use advertising cookies, third-party behavioral trackers, or analytics pixels.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security. <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initMobileNav } from '/js/common.js';
+    initMobileNav();
+  </script>
+</body>
+</html>

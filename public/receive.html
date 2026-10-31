@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receive Files | QuickShare</title>
+  <meta name="description" content="Enter your 6-character sharing code to view and download files or secure text messages.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="/" class="brand-logo" aria-label="QuickShare Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </div>
+        <span>QuickShare</span>
+      </a>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/upload.html" class="nav-link">Share Files</a></li>
+          <li><a href="/receive.html" class="nav-link active">Receive Files</a></li>
+          <li><a href="/about.html" class="nav-link">About</a></li>
+          <li class="nav-actions">
+            <a href="/upload.html" class="btn btn-primary btn-sm">Share Files</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container container-narrow">
+      
+      <!-- Code Input Card -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header" style="text-align: center;">
+          <h1 class="card-title">Receive Shared Files</h1>
+          <p class="card-subtitle">Enter the 6-character code provided by the sender to access the content.</p>
+        </div>
+
+        <!-- Alert Notification -->
+        <div id="receive-alert" class="alert alert-danger" style="display: none;"></div>
+
+        <!-- Code Entry Form -->
+        <form id="code-form" class="code-input-container">
+          <div class="code-input-wrapper">
+            <input 
+              type="text" 
+              id="code-input" 
+              class="form-control code-input" 
+              maxlength="8" 
+              placeholder="e.g. 7K2M9X" 
+              autocomplete="off" 
+              autocapitalize="characters" 
+              spellcheck="false" 
+              required
+            >
+            <button type="button" class="btn btn-secondary" id="paste-code-btn" title="Paste from clipboard">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+              Paste
+            </button>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" id="submit-code-btn" style="width: 100%;">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            Access Files
+          </button>
+        </form>
+      </div>
+
+      <!-- Password Prompt Card (Initially Hidden) -->
+      <div class="card" id="password-card" style="display: none; margin-bottom: 24px;">
+        <div class="card-header" style="text-align: center;">
+          <div style="width: 48px; height: 48px; border-radius: 9999px; background-color: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </div>
+          <h2 class="card-title">Password Required</h2>
+          <p class="card-subtitle">This share is protected. Please enter the password to view or download.</p>
+        </div>
+
+        <div id="password-error" class="alert alert-danger" style="display: none;"></div>
+
+        <div class="code-input-container">
+          <div class="form-group">
+            <label for="share-password" class="form-label">Password</label>
+            <input type="password" id="share-password" class="form-control" placeholder="Enter share password" required>
+          </div>
+          <button type="button" class="btn btn-primary" id="submit-password-btn" style="width: 100%;">
+            Unlock Share
+          </button>
+        </div>
+      </div>
+
+      <!-- Unlocked Content Card (Initially Hidden) -->
+      <div class="card" id="content-card" style="display: none;">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+          <div>
+            <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">Share Code</span>
+            <h2 id="share-code-header" style="font-family: var(--font-mono); font-size: 1.8rem; color: var(--primary); font-weight: 800;">------</h2>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="file-badge" id="badge-expires" style="background-color: var(--primary-light); color: var(--primary-text); padding: 6px 12px; font-size: 0.8rem;">Expires: --</span>
+            <span class="file-badge" id="badge-files" style="background-color: var(--surface-alt); color: var(--text); padding: 6px 12px; font-size: 0.8rem;">0 Files</span>
+            <span class="file-badge" id="badge-downloads" style="background-color: var(--surface-alt); color: var(--text); padding: 6px 12px; font-size: 0.8rem;">Downloads: 0</span>
+          </div>
+        </div>
+
+        <!-- Plain Text Message Display -->
+        <div id="text-message-card" style="margin-top: 20px; display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="font-size: 1.05rem; font-weight: 700;">Text Message</h3>
+            <button type="button" class="btn btn-secondary btn-sm" id="copy-text-btn">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+              </svg>
+              Copy Text
+            </button>
+          </div>
+          <!-- Safely rendered with textContent -->
+          <pre class="received-text-box" id="received-text"></pre>
+        </div>
+
+        <!-- Files Section -->
+        <div id="files-section" style="margin-top: 24px; display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <h3 style="font-size: 1.05rem; font-weight: 700;">Shared Files</h3>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="download-all-btn">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              Download All as ZIP
+            </button>
+          </div>
+
+          <div class="file-table-wrapper">
+            <table class="file-table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Type</th>
+                  <th>Size</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="files-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Safe Preview Modal -->
+  <div class="modal-overlay" id="preview-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">File Preview</h3>
+        <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Rendered safely: image, iframe (PDF), or pre (Text) -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('preview-modal').classList.remove('active')">Close</button>
+        <button type="button" class="btn btn-primary" id="modal-download-btn">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          Download File
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security. <a href="/privacy.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Privacy Policy</a> &bull; <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/receive.js"></script>
+</body>
+</html>
