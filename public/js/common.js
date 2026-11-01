@@ -1,5 +1,5 @@
 /**
- * QuickShare Common Frontend Utilities
+ * F Share Common Frontend Utilities
  */
 
 // Format byte sizes into human-readable strings

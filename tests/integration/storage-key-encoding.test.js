@@ -119,7 +119,7 @@ describe('Regression: Storage Object Key Generation & Filename Sanitization', ()
     const zipRes = await request(app).get(`/api/shares/${shareCode}/download-all`);
     assert.equal(zipRes.status, 200);
     assert.equal(zipRes.headers['content-type'], 'application/zip');
-    assert.ok(zipRes.headers['content-disposition'].includes(`QuickShare_${shareCode}.zip`));
+    assert.ok(zipRes.headers['content-disposition'].includes(`FShare_${shareCode}.zip`));
 
     // Cleanup
     await request(app)

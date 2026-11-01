@@ -3,8 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Receive Files | QuickShare</title>
-  <meta name="description" content="Enter your 6-character sharing code to view and download files or secure text messages.">
+  <title>Receive Files | F Share</title>
+  <meta name="description" content="Enter your 6-character F Share code to view, stream, and download shared files, documents, photos, videos, or secure notes. Fast and ephemeral.">
+  <meta name="keywords" content="F Share receive, receive files, download files with code, access shared files">
+  <meta name="robots" content="index, follow" id="meta-robots">
+  <link rel="canonical" href="{{CANONICAL_URL}}/receive.html">
+
+  <script>
+    // Safeguard: Dynamic shares or URLs with share codes must never be indexed
+    if (window.location.search && (window.location.search.includes('code=') || window.location.search.includes('token='))) {
+      var metaRobots = document.getElementById('meta-robots');
+      if (metaRobots) metaRobots.setAttribute('content', 'noindex, nofollow, noarchive');
+    }
+  </script>
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{CANONICAL_URL}}/receive.html">
+  <meta property="og:title" content="Receive Files | F Share">
+  <meta property="og:description" content="Enter your 6-character code to retrieve shared files and secure notes easily on F Share.">
+  <meta property="og:image" content="{{CANONICAL_URL}}/og-image.png">
+  <meta property="og:site_name" content="F Share">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="{{CANONICAL_URL}}/receive.html">
+  <meta name="twitter:title" content="Receive Files | F Share">
+  <meta name="twitter:description" content="Enter your 6-character code to retrieve shared files and secure notes easily on F Share.">
+  <meta name="twitter:image" content="{{CANONICAL_URL}}/og-image.png">
+
+  <!-- Favicons & Manifest -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
+
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -12,13 +46,15 @@
   <!-- Site Header -->
   <header class="site-header">
     <div class="container navbar">
-      <a href="/" class="brand-logo" aria-label="QuickShare Home">
-        <div class="brand-icon">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+      <a href="/" class="brand-logo" aria-label="F Share Homepage">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4h14M5 12h9M5 4v16" />
+            <circle cx="19" cy="4" r="1.5" fill="currentColor" />
+            <circle cx="14" cy="12" r="1.5" fill="currentColor" />
           </svg>
         </div>
-        <span>QuickShare</span>
+        <span>F Share</span>
       </a>
 
       <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
@@ -27,7 +63,7 @@
         </svg>
       </button>
 
-      <nav>
+      <nav aria-label="Main Navigation">
         <ul class="nav-links">
           <li><a href="/" class="nav-link">Home</a></li>
           <li><a href="/upload.html" class="nav-link">Share Files</a></li>
@@ -70,7 +106,7 @@
               required
             >
             <button type="button" class="btn btn-secondary" id="paste-code-btn" title="Paste from clipboard">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
               </svg>
               Paste
@@ -78,7 +114,7 @@
           </div>
 
           <button type="submit" class="btn btn-primary btn-lg" id="submit-code-btn" style="width: 100%;">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
             </svg>
@@ -91,7 +127,7 @@
       <div class="card" id="password-card" style="display: none; margin-bottom: 24px;">
         <div class="card-header" style="text-align: center;">
           <div style="width: 48px; height: 48px; border-radius: 9999px; background-color: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
             </svg>
           </div>
@@ -99,65 +135,63 @@
           <p class="card-subtitle">This share is protected. Please enter the password to view or download.</p>
         </div>
 
-        <div id="password-error" class="alert alert-danger" style="display: none;"></div>
-
-        <div class="code-input-container">
+        <form id="password-form">
           <div class="form-group">
-            <label for="share-password" class="form-label">Password</label>
             <div class="password-input-wrapper">
-              <input type="password" id="share-password" class="form-control" placeholder="Enter share password" required>
-              <button type="button" class="password-toggle-btn" id="toggle-receive-password-btn" aria-label="Show password" title="Show password">
-                <svg class="eye-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              <input type="password" id="unlock-password" class="form-input" placeholder="Enter share password" required autocomplete="current-password">
+              <button type="button" class="btn-toggle-password" id="toggle-receive-password" aria-label="Toggle password visibility">
+                <svg class="eye-show" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                <svg class="eye-slash-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+                <svg class="eye-hide" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
                 </svg>
               </button>
             </div>
           </div>
-          <button type="button" class="btn btn-primary" id="submit-password-btn" style="width: 100%;">
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
             Unlock Share
           </button>
-        </div>
+        </form>
       </div>
 
-      <!-- Unlocked Content Card (Initially Hidden) -->
-      <div class="card" id="content-card" style="display: none;">
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-          <div>
-            <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">Share Code</span>
-            <h2 id="share-code-header" style="font-family: var(--font-mono); font-size: 1.8rem; color: var(--primary); font-weight: 800;">------</h2>
-          </div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span class="file-badge" id="badge-expires" style="background-color: var(--primary-light); color: var(--primary-text); padding: 6px 12px; font-size: 0.8rem;">Expires: --</span>
-            <span class="file-badge" id="badge-files" style="background-color: var(--surface-alt); color: var(--text); padding: 6px 12px; font-size: 0.8rem;">0 Files</span>
-            <span class="file-badge" id="badge-downloads" style="background-color: var(--surface-alt); color: var(--text); padding: 6px 12px; font-size: 0.8rem;">Downloads: 0</span>
+      <!-- Share Content Display (Initially Hidden) -->
+      <div id="content-container" style="display: none;">
+        <!-- Metadata Header -->
+        <div class="card" style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <span class="share-code-pill" id="badge-code">CODE: ------</span>
+              <span class="file-badge badge-doc" id="badge-expires" style="margin-left: 8px;">Expires in --</span>
+            </div>
+            <div id="badge-downloads" style="font-size: 0.85rem; color: var(--text-muted);"></div>
           </div>
         </div>
 
-        <!-- Plain Text Message Display -->
-        <div id="text-message-card" style="margin-top: 20px; display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h3 style="font-size: 1.05rem; font-weight: 700;">Text Message</h3>
+        <!-- Text Message Display (If present) -->
+        <div class="card" id="text-display-card" style="display: none; margin-bottom: 20px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h2 style="font-size: 1.1rem; font-weight: 700;">Shared Message</h2>
             <button type="button" class="btn btn-secondary btn-sm" id="copy-text-btn">
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
               </svg>
               Copy Text
             </button>
           </div>
-          <!-- Safely rendered with textContent -->
-          <pre class="received-text-box" id="received-text"></pre>
+          <div class="shared-text-box" id="shared-text-content"></div>
         </div>
 
-        <!-- Files Section -->
-        <div id="files-section" style="margin-top: 24px; display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-            <h3 style="font-size: 1.05rem; font-weight: 700;">Shared Files</h3>
-            <button type="button" class="btn btn-outline-primary btn-sm" id="download-all-btn">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <!-- Files List Display (If present) -->
+        <div class="card" id="files-display-card" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h2 style="font-size: 1.15rem; font-weight: 700;">Shared Files</h2>
+              <span id="files-summary-text" style="font-size: 0.85rem; color: var(--text-muted);">0 files</span>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="download-all-btn" style="display: none;">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
               </svg>
               Download All as ZIP
@@ -189,7 +223,7 @@
       <div class="modal-header">
         <h3 class="modal-title" id="modal-title">File Preview</h3>
         <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
@@ -200,7 +234,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="document.getElementById('preview-modal').classList.remove('active')">Close</button>
         <button type="button" class="btn btn-primary" id="modal-download-btn">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
           </svg>
           Download File
@@ -213,7 +247,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom">
-        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security. <a href="/privacy.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Privacy Policy</a> &bull; <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
+        <p>&copy; 2026 F Share. Fast, Simple & Secure File Sharing. <a href="/privacy.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Privacy Policy</a> &bull; <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
       </div>
     </div>
   </footer>
@@ -221,4 +255,3 @@
   <script type="module" src="/js/receive.js"></script>
 </body>
 </html>
-

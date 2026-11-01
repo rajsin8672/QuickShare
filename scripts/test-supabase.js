@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * QuickShare Supabase Connectivity and Security Diagnosis Tool
+ * F Share Supabase Connectivity and Security Diagnosis Tool
  *
  * Safely tests connection to Supabase PostgreSQL and Supabase Storage
  * without leaking credentials or printing sensitive tokens.
@@ -40,7 +40,7 @@ const detectedRole = inspectKeyRole(activeKey);
 const isPrivileged = isPrivilegedRole(detectedRole);
 
 console.log('=====================================================');
-console.log('🔍 QuickShare Supabase Connectivity & Security Audit');
+console.log('🔍 F Share Supabase Connectivity & Security Audit');
 console.log('=====================================================\n');
 
 // 1. Inspect URL

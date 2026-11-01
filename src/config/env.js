@@ -81,6 +81,9 @@ export const config = {
   maxTotalSize: parseInt(process.env.MAX_TOTAL_SIZE_BYTES || '104857600', 10), // 100 MB
   maxFileCount: parseInt(process.env.MAX_FILE_COUNT || '10', 10), // 10 files
 
+  // Site & Canonical URL for SEO
+  siteUrl: (process.env.SITE_URL || process.env.CANONICAL_DOMAIN || '').replace(/\/+$/, ''),
+
   // Format configurations
   allowedImageFormats: (process.env.ALLOWED_IMAGE_FORMATS || 'jpg,jpeg,png,webp,gif').toLowerCase().split(',').map(s => s.trim()),
   allowedVideoFormats: (process.env.ALLOWED_VIDEO_FORMATS || 'mp4,webm,mov').toLowerCase().split(',').map(s => s.trim()),

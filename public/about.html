@@ -3,8 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About QuickShare | Architecture & Security</title>
-  <meta name="description" content="Learn about QuickShare's design principles, security architecture, and ephemeral file sharing technology.">
+  <title>About F Share | Architecture & Security</title>
+  <meta name="description" content="Learn about F Share's design principles, security architecture, and ephemeral code-based file sharing technology. Fast, simple, and secure.">
+  <meta name="keywords" content="About F Share, file sharing architecture, ephemeral file sharing security, secure file transfer">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{CANONICAL_URL}}/about.html">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{CANONICAL_URL}}/about.html">
+  <meta property="og:title" content="About F Share | Architecture & Security">
+  <meta property="og:description" content="Learn about F Share's architecture, security model, and ephemeral code-based file sharing technology.">
+  <meta property="og:image" content="{{CANONICAL_URL}}/og-image.png">
+  <meta property="og:site_name" content="F Share">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="{{CANONICAL_URL}}/about.html">
+  <meta name="twitter:title" content="About F Share | Architecture & Security">
+  <meta name="twitter:description" content="Learn about F Share's architecture, security model, and ephemeral code-based file sharing technology.">
+  <meta name="twitter:image" content="{{CANONICAL_URL}}/og-image.png">
+
+  <!-- Favicons & Manifest -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
+
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -12,13 +38,15 @@
   <!-- Site Header -->
   <header class="site-header">
     <div class="container navbar">
-      <a href="/" class="brand-logo" aria-label="QuickShare Home">
-        <div class="brand-icon">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+      <a href="/" class="brand-logo" aria-label="F Share Homepage">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4h14M5 12h9M5 4v16" />
+            <circle cx="19" cy="4" r="1.5" fill="currentColor" />
+            <circle cx="14" cy="12" r="1.5" fill="currentColor" />
           </svg>
         </div>
-        <span>QuickShare</span>
+        <span>F Share</span>
       </a>
 
       <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
@@ -27,7 +55,7 @@
         </svg>
       </button>
 
-      <nav>
+      <nav aria-label="Main Navigation">
         <ul class="nav-links">
           <li><a href="/" class="nav-link">Home</a></li>
           <li><a href="/upload.html" class="nav-link">Share Files</a></li>
@@ -45,18 +73,18 @@
   <main class="main-content">
     <div class="container container-narrow">
       <div class="card" style="margin-bottom: 30px;">
-        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px;">About QuickShare</h1>
+        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px;">About F Share</h1>
         <p style="font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px;">
-          QuickShare was engineered from the ground up to solve a universal friction point: transferring documents, pictures, and notes between disparate devices, operating systems, and users without requiring user registration, email invitations, or permanent storage footprints.
+          F Share was engineered from the ground up to solve a universal friction point: transferring documents, pictures, videos, and notes between disparate devices, operating systems, and users without requiring user registration, email invitations, or permanent storage footprints.
         </p>
 
         <h2 style="font-size: 1.35rem; font-weight: 700; margin: 28px 0 12px;" id="architecture">Technical Architecture</h2>
         <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">
-          QuickShare employs a modern, lightweight, and decoupled architecture separating frontend presentation, backend REST services, database state, and object storage:
+          F Share employs a modern, lightweight, and decoupled architecture separating frontend presentation, backend REST services, database state, and object storage:
         </p>
         <ul style="margin-left: 20px; color: var(--text); line-height: 1.8; margin-bottom: 24px;">
-          <li><strong>Frontend:</strong> Clean Vanilla HTML5, CSS3, and JavaScript utilizing the Fetch API, semantic markup, and responsive design systems. No frontend heavyweight frameworks.</li>
-          <li><strong>Backend Engine:</strong> Node.js and Express.js REST API service with Helmet security headers, Multer streaming uploads, and strict rate-limiting layers.</li>
+          <li><strong>Frontend:</strong> Clean Vanilla HTML5, CSS3, and JavaScript utilizing the Fetch API, semantic markup, and responsive design systems. Fast page loads with zero heavyweight frameworks.</li>
+          <li><strong>Backend Engine:</strong> Node.js and Express.js REST API service configured with Helmet security headers, Multer streaming uploads, and multi-tier rate limiting defenses.</li>
           <li><strong>Database Tier:</strong> Supabase PostgreSQL with strict Row Level Security (RLS) enforcing backend service-role access only.</li>
           <li><strong>Object Storage:</strong> Supabase Storage with dedicated private bucket <code style="background: var(--surface-alt); padding: 2px 6px; border-radius: 4px;">shared-files</code>. Public access is disabled at the storage engine level.</li>
         </ul>
@@ -64,26 +92,26 @@
         <h2 style="font-size: 1.35rem; font-weight: 700; margin: 28px 0 12px;" id="security">Security & Privacy Model</h2>
         <div class="features-grid" style="margin: 20px 0;">
           <div class="feature-card">
-            <h3 style="font-size: 1rem; font-weight: 700;">Unambiguous Code Alphabet</h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 6px;">Unambiguous Code Alphabet</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">
               Generated codes utilize a custom 32-character base that excludes visually confounding characters (such as 0 vs O, 1 vs I or l), preventing transcription errors across devices.
             </p>
           </div>
           <div class="feature-card">
-            <h3 style="font-size: 1rem; font-weight: 700;">Password Hashing</h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">
-              Optional share passwords are cryptographic hashes salted with bcrypt. Plaintext passwords are never written to the database or logged.
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 6px;">Bcrypt Password Hashing</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">
+              Optional share passwords are cryptographic hashes salted with bcrypt. Plaintext passwords are never written to the database or logged in server telemetry.
             </p>
           </div>
           <div class="feature-card">
-            <h3 style="font-size: 1rem; font-weight: 700;">Zero Permanent Storage</h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">
-              An automated, scheduled cleanup service scans for expired shares and purges underlying files from storage and records from the database.
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 6px;">Zero Permanent Storage Footprint</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">
+              An automated, scheduled cleanup service scans for expired shares and permanently purges underlying files from storage and records from the database.
             </p>
           </div>
           <div class="feature-card">
-            <h3 style="font-size: 1rem; font-weight: 700;">Brute-Force Shield</h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 6px;">Brute-Force Shield</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">
               Strict IP-based rate limiting on code verification and download endpoints throttles repeated attempts and prevents dictionary or guessing attacks.
             </p>
           </div>
@@ -102,7 +130,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom">
-        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security. <a href="/privacy.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Privacy Policy</a> &bull; <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
+        <p>&copy; 2026 F Share. Fast, Simple & Secure File Sharing. <a href="/privacy.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Privacy Policy</a> &bull; <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
       </div>
     </div>
   </footer>
@@ -113,4 +141,3 @@
   </script>
 </body>
 </html>
-

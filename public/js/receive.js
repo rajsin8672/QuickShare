@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const a = document.createElement('a');
       a.href = url;
-      a.setAttribute('download', `QuickShare_${activeShareCode}.zip`);
+      a.setAttribute('download', `FShare_${activeShareCode}.zip`);
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

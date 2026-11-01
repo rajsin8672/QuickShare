@@ -10,7 +10,7 @@ describe('Short-Lived Signed Download URLs Integration', () => {
     const uploadRes = await request(app)
       .post('/api/shares')
       .field('textContent', 'Testing signed URL download endpoint')
-      .attach('files', Buffer.from('Confidential QuickShare test document contents'), 'signed-test.txt');
+      .attach('files', Buffer.from('Confidential F Share test document contents'), 'signed-test.txt');
 
     assert.equal(uploadRes.status, 201);
     const { shareCode } = uploadRes.body.data;
@@ -38,7 +38,7 @@ describe('Short-Lived Signed Download URLs Integration', () => {
 
     assert.equal(downloadRes.status, 200);
     const content = downloadRes.text || downloadRes.body.toString('utf8');
-    assert.equal(content, 'Confidential QuickShare test document contents');
+    assert.equal(content, 'Confidential F Share test document contents');
     assert.ok(downloadRes.headers['content-disposition'].includes('signed-test.txt'));
   });
 

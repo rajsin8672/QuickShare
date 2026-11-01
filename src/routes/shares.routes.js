@@ -329,7 +329,7 @@ router.get('/:code/download-all', async (req, res, next) => {
 
     const { share, files } = await shareService.getFilesForZip(code, token, ipHash);
 
-    res.setHeader('Content-Disposition', `attachment; filename="QuickShare_${share.share_code}.zip"`);
+    res.setHeader('Content-Disposition', `attachment; filename="FShare_${share.share_code}.zip"`);
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('X-Content-Type-Options', 'nosniff');
 

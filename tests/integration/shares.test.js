@@ -8,7 +8,7 @@ describe('Share Creation, Receiving, and Downloading API Integration', () => {
   it('A1: should create a text-only share successfully', async () => {
     const res = await request(app)
       .post('/api/shares')
-      .field('textContent', 'Hello from QuickShare automated test!')
+      .field('textContent', 'Hello from F Share automated test!')
       .field('expiryMinutes', 30);
 
     assert.equal(res.status, 201);

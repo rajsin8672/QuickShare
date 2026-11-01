@@ -3,22 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuickShare | Instant Code-Based Ephemeral File Sharing</title>
-  <meta name="description" content="Share files and text securely with simple 6-character sharing codes. Ephemeral, private, and automated expiration.">
+  <title>F Share | Fast, Simple & Secure File Sharing</title>
+  <meta name="description" content="Share files online in seconds with F Share. Upload documents, photos, videos, or text notes and share with a simple 6-character code. Private, ephemeral, and fast.">
+  <meta name="keywords" content="F Share, file sharing, share files online, online file transfer, secure file sharing, send files online, share files using a code">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{CANONICAL_URL}}/">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{CANONICAL_URL}}/">
+  <meta property="og:title" content="F Share | Fast, Simple & Secure File Sharing">
+  <meta property="og:description" content="Upload files, generate a share code, and let others retrieve them easily. Simple file sharing with configurable expiration and secure downloads.">
+  <meta property="og:image" content="{{CANONICAL_URL}}/og-image.png">
+  <meta property="og:site_name" content="F Share">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="{{CANONICAL_URL}}/">
+  <meta name="twitter:title" content="F Share | Fast, Simple & Secure File Sharing">
+  <meta name="twitter:description" content="Upload files, generate a share code, and let others retrieve them easily. Simple file sharing with configurable expiration and secure downloads.">
+  <meta name="twitter:image" content="{{CANONICAL_URL}}/og-image.png">
+
+  <!-- Favicons & Manifest -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
+
   <link rel="stylesheet" href="/css/style.css">
+
+  <!-- JSON-LD Structured Data: WebSite, WebApplication, and FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "{{CANONICAL_URL}}/#website",
+        "url": "{{CANONICAL_URL}}/",
+        "name": "F Share",
+        "description": "Fast, Simple & Secure File Sharing",
+        "publisher": {
+          "@type": "Organization",
+          "name": "F Share",
+          "url": "{{CANONICAL_URL}}/"
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "@id": "{{CANONICAL_URL}}/#webapplication",
+        "name": "F Share",
+        "url": "{{CANONICAL_URL}}/",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "description": "Upload files, generate a share code, and let others retrieve them easily. Simple file sharing with configurable expiration and secure downloads.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Ephemeral file sharing using 6-character codes",
+          "Automatic expiration from 30 minutes up to 7 days",
+          "Optional bcrypt password protection",
+          "Max 10 files and 100MB per share",
+          "In-browser preview for photos, videos, and PDFs",
+          "Owner deletion tokens for immediate share termination"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "{{CANONICAL_URL}}/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I share files using a code?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Simply upload your files or enter a text note on F Share, select an expiration timer, and optionally add a password. F Share instantly generates an unambiguous 6-character code and QR code that you can share with the recipient."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need an account or email to use F Share?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No account, email, or registration is required. F Share is built entirely for quick, anonymous, and ephemeral peer exchanges without tracking or permanent accounts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What file types and size limits are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "F Share supports photos (JPG, PNG, WEBP, GIF), video streaming (MP4, WEBM, MOV), documents (PDF, DOC, DOCX), and plain text. Senders can upload up to 10 files per share, up to 50MB per individual file, and a total batch size of 100MB."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How long are files kept before automatic deletion?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Senders choose an expiration period of 30 minutes (default), 1 hour, 6 hours, 24 hours, or 7 days. Once the expiration time passes or the maximum download count is reached, all stored files and database records are permanently purged."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are files public or searchable on search engines?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. All files are stored in private cloud storage with Row Level Security (RLS) enabled. Dynamic shares and recipient links are blocked with noindex directives and excluded from search engines."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I delete shared files before the expiration timer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. When you create a share, F Share provides a private owner deletion token. You can use this token to immediately terminate the share and wipe all associated files from storage anytime."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
   <!-- Site Header & Navigation -->
   <header class="site-header">
     <div class="container navbar">
-      <a href="/" class="brand-logo" aria-label="QuickShare Home">
-        <div class="brand-icon">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+      <a href="/" class="brand-logo" aria-label="F Share Homepage">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4h14M5 12h9M5 4v16" />
+            <circle cx="19" cy="4" r="1.5" fill="currentColor" />
+            <circle cx="14" cy="12" r="1.5" fill="currentColor" />
           </svg>
         </div>
-        <span>QuickShare</span>
+        <span>F Share</span>
       </a>
 
       <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
@@ -27,7 +153,7 @@
         </svg>
       </button>
 
-      <nav>
+      <nav aria-label="Main Navigation">
         <ul class="nav-links">
           <li><a href="/" class="nav-link active">Home</a></li>
           <li><a href="/upload.html" class="nav-link">Share Files</a></li>
@@ -46,238 +172,292 @@
     <div class="container">
       
       <!-- Hero Section -->
-      <section class="hero">
+      <section class="hero" aria-labelledby="hero-title">
         <div class="hero-pill">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
           </svg>
-          <span>Private, Ephemeral & Secure</span>
+          <span>Fast, Simple & Secure File Sharing</span>
         </div>
-        <h1 class="hero-title">Share Files Instantly. No Hassle.</h1>
+        <h1 id="hero-title" class="hero-title">Share Files Online in Seconds</h1>
         <p class="hero-subtitle">
-          Upload documents, images, or quick messages and share them across devices using a clean, 6-character code. No user accounts, zero trackers, and automatic file expiration.
+          Upload files, generate a share code, and let others retrieve them easily. Simple file sharing with configurable expiration and secure downloads.
         </p>
         <div class="hero-actions">
           <a href="/upload.html" class="btn btn-primary btn-lg">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
             </svg>
-            Share Files
+            Share Files Online
           </a>
           <a href="/receive.html" class="btn btn-secondary btn-lg">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
             </svg>
-            Receive Files
+            Receive With Code
           </a>
         </div>
       </section>
 
-      <!-- How It Works Section -->
-      <section style="margin: 60px 0;">
-        <div style="text-align: center; margin-bottom: 32px;">
-          <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--text);">How QuickShare Works</h2>
-          <p style="color: var(--text-muted); margin-top: 6px;">Three easy steps to move files between any desktop, phone, or colleague.</p>
+      <!-- How File Sharing Works Section -->
+      <section style="margin: 60px 0;" aria-labelledby="how-it-works-title">
+        <div style="text-align: center; margin-bottom: 36px;">
+          <h2 id="how-it-works-title" style="font-size: 1.85rem; font-weight: 700; color: var(--text);">How File Sharing Works on F Share</h2>
+          <p style="color: var(--text-muted); margin-top: 6px; font-size: 1rem;">Three straightforward steps to send files online between phones, tablets, and computers.</p>
         </div>
 
         <div class="steps-grid">
           <div class="step-card">
-            <div class="step-number">1</div>
-            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Upload Content</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              Drop your documents, photos, or enter a text message. Choose your desired expiration period from 30 minutes to 7 days.
+            <div class="step-number" aria-hidden="true">1</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Upload Content or Note</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+              Select up to 10 files (photos, videos, PDFs, documents) or type a text message. Choose an expiration window from 30 minutes up to 7 days, and optionally set a password.
             </p>
           </div>
 
           <div class="step-card">
-            <div class="step-number">2</div>
-            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Get Your Code</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              QuickShare generates an unambiguous 6-character code (or QR code). Only those with the code can access the files.
+            <div class="step-number" aria-hidden="true">2</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Get Your 6-Character Code</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+              F Share creates a 6-character sharing code and an instant QR code. Senders also receive a private owner deletion token to wipe files anytime.
             </p>
           </div>
 
           <div class="step-card">
-            <div class="step-number">3</div>
-            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Download & Done</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              The receiver enters the code to preview files or download them individually or as a single ZIP archive.
+            <div class="step-number" aria-hidden="true">3</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Retrieve & Download</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+              The recipient enters the code on any device to view files, preview documents and videos in their browser, or download everything as an organized ZIP archive.
             </p>
           </div>
         </div>
       </section>
 
-      <!-- Supported Formats Card -->
-      <section style="margin: 60px 0;">
-        <div class="card">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
-            <div>
-              <h3 style="font-size: 1.3rem; font-weight: 700;">Supported File Formats</h3>
-              <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px;">
-                Photos, Videos, PDFs, Documents, and Text notes. Up to 50MB per file, 100MB per share.
-              </p>
-            </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <span class="file-badge badge-image" style="padding: 6px 14px; font-size: 0.85rem;">Photos (JPG, PNG, WEBP, GIF)</span>
-              <span class="file-badge badge-video" style="padding: 6px 14px; font-size: 0.85rem;">Videos (MP4, WEBM, MOV)</span>
-              <span class="file-badge badge-pdf" style="padding: 6px 14px; font-size: 0.85rem;">PDF Documents</span>
-              <span class="file-badge badge-doc" style="padding: 6px 14px; font-size: 0.85rem;">Word (DOC, DOCX)</span>
-              <span class="file-badge badge-text" style="padding: 6px 14px; font-size: 0.85rem;">TXT / Notes</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Feature Grid -->
-      <section style="margin: 60px 0;">
-        <div style="text-align: center; margin-bottom: 32px;">
-          <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--text);">Engineered for Security & Speed</h2>
-          <p style="color: var(--text-muted); margin-top: 6px;">Enterprise-grade protection with consumer-grade simplicity.</p>
+      <!-- Why Choose F Share (Benefits) -->
+      <section style="margin: 60px 0;" aria-labelledby="why-fshare-title">
+        <div style="text-align: center; margin-bottom: 36px;">
+          <h2 id="why-fshare-title" style="font-size: 1.85rem; font-weight: 700; color: var(--text);">Why Use F Share for Online File Transfer</h2>
+          <p style="color: var(--text-muted); margin-top: 6px; font-size: 1rem;">Designed for rapid, code-based ephemeral exchanges without unwanted storage footprints.</p>
         </div>
 
         <div class="features-grid">
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
+            <div class="feature-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
               </svg>
             </div>
-            <h3 style="font-size: 1.1rem; font-weight: 700;">Password Protection</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              Set an optional password for sensitive transfers. Files remain strictly locked until the recipient authenticates.
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;">Zero Registration Required</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+              No accounts, passwords, or email sign-ups. Open F Share, upload your files, share the code, and close the tab. Complete privacy by design.
             </p>
           </div>
 
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
+            <div class="feature-icon-wrapper" aria-hidden="true">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;">Bypass Email Attachment Limits</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+              Most email providers reject attachments over 20MB. F Share accommodates up to 50MB per individual file and 100MB per batch with fast direct downloads.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <h3 style="font-size: 1.1rem; font-weight: 700;">Automatic Expiration</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              Files purge automatically after your configured expiry window (30m, 1h, 6h, 24h, 7d). No residual data left behind.
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;">Automatic Permanent Deletion</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+              Files do not sit on servers forever. Our automated background worker permanently removes expired files and database records according to your chosen timer.
             </p>
           </div>
 
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
+            <div class="feature-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
               </svg>
             </div>
-            <h3 style="font-size: 1.1rem; font-weight: 700;">Download Limits</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              Enforce a maximum number of successful downloads. Once reached, the share automatically self-terminates.
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;">Private Server-Side Storage</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+              Files are stored in private cloud storage protected with Row Level Security (RLS). Downloads are gated through authorized backend APIs with signed, short-lived URLs.
             </p>
           </div>
 
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
+            <div class="feature-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
               </svg>
             </div>
-            <h3 style="font-size: 1.1rem; font-weight: 700;">Private Storage</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              Files are stored in private Supabase Storage buckets, guarded by backend authorization and temporary signed streams.
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;">Optional Password Protection</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+              Protect sensitive documents with bcrypt password hashing. Files remain encrypted at rest and locked until the recipient authenticates with the correct password.
             </p>
           </div>
 
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-              </svg>
-            </div>
-            <h3 style="font-size: 1.1rem; font-weight: 700;">In-Browser Previews</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              Recipients can safely preview PDFs, image galleries, and plain text notes without downloading first.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon-wrapper">
+            <div class="feature-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
               </svg>
             </div>
-            <h3 style="font-size: 1.1rem; font-weight: 700;">Owner Deletion Tokens</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-              Senders receive a cryptographic owner token to delete shares immediately at any time before expiration.
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;">Owner Deletion Tokens</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+              Need to revoke a transfer immediately? Senders can delete shares on demand at any point before natural expiration using their unique deletion token.
             </p>
           </div>
         </div>
       </section>
 
-      <!-- FAQ Section -->
-      <section style="margin: 60px 0;">
-        <div style="text-align: center; margin-bottom: 32px;">
-          <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--text);">Frequently Asked Questions</h2>
-          <p style="color: var(--text-muted); margin-top: 6px;">Common questions about QuickShare security and features.</p>
+      <!-- Supported File Types Card -->
+      <section style="margin: 60px 0;" aria-labelledby="supported-formats-title">
+        <div class="card">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div>
+              <h2 id="supported-formats-title" style="font-size: 1.5rem; font-weight: 700;">Supported File Types & Transfer Limits</h2>
+              <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;">
+                F Share supports a diverse selection of media, documents, and notes up to <strong>50MB per file</strong> and <strong>100MB per batch</strong> (maximum 10 files per share).
+              </p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <span class="file-badge badge-image" style="padding: 8px 16px; font-size: 0.9rem;">Photos (JPG, JPEG, PNG, WEBP, GIF)</span>
+              <span class="file-badge badge-video" style="padding: 8px 16px; font-size: 0.9rem;">Video Playback (MP4, WEBM, MOV)</span>
+              <span class="file-badge badge-pdf" style="padding: 8px 16px; font-size: 0.9rem;">PDF Documents (In-browser viewer)</span>
+              <span class="file-badge badge-doc" style="padding: 8px 16px; font-size: 0.9rem;">Word Documents (DOC, DOCX)</span>
+              <span class="file-badge badge-text" style="padding: 8px 16px; font-size: 0.9rem;">Plain Text Notes & Code</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Common Use Cases Section -->
+      <section style="margin: 60px 0;" aria-labelledby="use-cases-title">
+        <div style="text-align: center; margin-bottom: 36px;">
+          <h2 id="use-cases-title" style="font-size: 1.85rem; font-weight: 700; color: var(--text);">Everyday Use Cases for F Share</h2>
+          <p style="color: var(--text-muted); margin-top: 6px; font-size: 1rem;">Simple file sharing with a code solves friction across devices and platforms.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Cross-Platform Transfer</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+              Easily move high-resolution images or videos between an iPhone and a Windows PC, or an Android tablet and a MacBook, without logging into cloud drives or pairing Bluetooth.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Ephemeral Work Documents</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+              Send invoices, receipts, project specifications, or resumes to clients or collaborators with self-expiring links that automatically disappear after download.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Meeting & Classroom Notes</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+              Presenters and teachers can project a 6-character code on a screen so an entire room of participants can immediately access session PDFs, handouts, or notes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Frequently Asked Questions Section -->
+      <section style="margin: 60px 0;" aria-labelledby="faq-section-title">
+        <div style="text-align: center; margin-bottom: 36px;">
+          <h2 id="faq-section-title" style="font-size: 1.85rem; font-weight: 700; color: var(--text);">Frequently Asked Questions</h2>
+          <p style="color: var(--text-muted); margin-top: 6px; font-size: 1rem;">Everything you need to know about F Share security, privacy, and file limits.</p>
         </div>
 
         <div class="faq-list">
           <div class="faq-item">
-            <button class="faq-question">
-              <span>Do I need to create an account to share or receive files?</span>
-              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>How do I share files using a code?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </button>
             <div class="faq-answer">
-              No account, email, or registration is required. QuickShare is built entirely on anonymous, code-based ephemeral exchanges.
+              To share files using a code, open the <a href="/upload.html" style="color: var(--primary); text-decoration: underline;">Share Files page</a>, drag and drop your files or enter a text note, select your desired expiration duration, and click "Share Now". F Share immediately outputs an easy-to-read 6-character code (such as ABC234) and a QR code. Give this code to the receiver, who enters it on the <a href="/receive.html" style="color: var(--primary); text-decoration: underline;">Receive Files page</a> to download.
             </div>
           </div>
 
           <div class="faq-item">
-            <button class="faq-question">
-              <span>How long are files kept before being deleted?</span>
-              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>Do I need an account or email to share files?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </button>
             <div class="faq-answer">
-              The sender chooses an expiration period: 30 minutes (default), 1 hour, 6 hours, 24 hours, or 7 days. Once expired, our automated background cleanup permanently deletes both the file data and database records.
+              No account, email, or user sign-in is required. F Share operates on anonymous, code-based ephemeral exchanges designed for speed and data minimization.
             </div>
           </div>
 
           <div class="faq-item">
-            <button class="faq-question">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>How long do uploaded files stay available?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              The sender decides the exact lifespan of the share: 30 minutes (default), 1 hour, 6 hours, 24 hours, or 7 days. Additionally, senders can specify a download limit (for instance, 1 download). Once the timer elapses or the limit is hit, the files are permanently wiped by our automated cleanup engine.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>Are uploaded files public or searchable online?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              No. Storage buckets are strictly private with PostgreSQL Row Level Security (RLS) active. Dynamic file URLs and receiver pages have <code>noindex, nofollow</code> headers and robots.txt disallow rules. Search engine bots cannot crawl or index your files.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
               <span>Can I share plain text without uploading any files?</span>
-              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </button>
             <div class="faq-answer">
-              Yes! QuickShare allows text-only shares, file-only shares, or combined shares containing both a text message and multiple documents.
+              Yes! F Share supports text-only shares, file-only shares, and mixed shares containing both a formatted text message and attached files.
             </div>
           </div>
 
           <div class="faq-item">
-            <button class="faq-question">
-              <span>Are files public or searchable?</span>
-              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button class="faq-question" type="button" aria-expanded="false">
+              <span>Can I cancel or delete a share before it expires?</span>
+              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </button>
             <div class="faq-answer">
-              No. Storage buckets are strictly private with Row Level Security (RLS) enabled. Files cannot be indexed or crawled, and downloads require backend authorization against the exact share code.
+              Yes. Upon creating any share, F Share provides the sender with an exclusive cryptographic deletion token. Clicking the "Delete Share Now" button immediately purges the share from storage and the database.
             </div>
           </div>
+        </div>
+      </section>
 
-          <div class="faq-item">
-            <button class="faq-question">
-              <span>What happens if someone tries to guess sharing codes?</span>
-              <svg class="faq-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </button>
-            <div class="faq-answer">
-              Our backend employs strict rate-limiting and brute-force defenses. An unambiguous 32-character alphabet creates over 1 billion possible combinations for 6-character codes, and repeated incorrect attempts trigger temporary IP bans.
-            </div>
-          </div>
+      <!-- Bottom Call to Action -->
+      <section style="margin: 60px 0; text-align: center; padding: 48px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 12px;">Ready to Send Files Online?</h2>
+        <p style="color: var(--text-muted); max-width: 540px; margin: 0 auto 24px; font-size: 1rem;">
+          Try F Share now. No registration, no cookies, no tracking. Just fast, simple, and secure file sharing.
+        </p>
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+          <a href="/upload.html" class="btn btn-primary btn-lg">Start Sharing Files</a>
+          <a href="/receive.html" class="btn btn-secondary btn-lg">Receive With Code</a>
         </div>
       </section>
 
@@ -289,16 +469,18 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="/" class="brand-logo">
-            <div class="brand-icon">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          <a href="/" class="brand-logo" aria-label="F Share Homepage">
+            <div class="brand-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 4h14M5 12h9M5 4v16" />
+                <circle cx="19" cy="4" r="1.5" fill="currentColor" />
+                <circle cx="14" cy="12" r="1.5" fill="currentColor" />
               </svg>
             </div>
-            <span>QuickShare</span>
+            <span>F Share</span>
           </a>
           <p>
-            Secure, code-based ephemeral file sharing built with vanilla web standards and cloud-native storage.
+            Fast, Simple & Secure File Sharing. Share documents, media, and text notes across devices using ephemeral 6-character codes.
           </p>
         </div>
 
@@ -308,7 +490,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/upload.html">Share Files</a></li>
             <li><a href="/receive.html">Receive Files</a></li>
-            <li><a href="/about.html">About QuickShare</a></li>
+            <li><a href="/about.html">About F Share</a></li>
           </ul>
         </div>
 
@@ -323,7 +505,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security.</p>
+        <p>&copy; 2026 F Share. Fast, Simple & Secure File Sharing. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -335,4 +517,3 @@
   </script>
 </body>
 </html>
-

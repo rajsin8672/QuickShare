@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Page Not Found | QuickShare</title>
+  <title>404 - Page Not Found | F Share</title>
+  <meta name="description" content="The requested page on F Share could not be found. It may have expired or been moved.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Favicons & Manifest -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
+
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -11,16 +21,18 @@
   <!-- Site Header -->
   <header class="site-header">
     <div class="container navbar">
-      <a href="/" class="brand-logo" aria-label="QuickShare Home">
-        <div class="brand-icon">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+      <a href="/" class="brand-logo" aria-label="F Share Homepage">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4h14M5 12h9M5 4v16" />
+            <circle cx="19" cy="4" r="1.5" fill="currentColor" />
+            <circle cx="14" cy="12" r="1.5" fill="currentColor" />
           </svg>
         </div>
-        <span>QuickShare</span>
+        <span>F Share</span>
       </a>
 
-      <nav>
+      <nav aria-label="Main Navigation">
         <ul class="nav-links">
           <li><a href="/" class="nav-link">Home</a></li>
           <li><a href="/upload.html" class="nav-link">Share Files</a></li>
@@ -36,8 +48,8 @@
     <div class="container" style="text-align: center; padding: 80px 20px;">
       <div style="font-size: 6rem; font-weight: 900; color: var(--primary); line-height: 1; margin-bottom: 16px;">404</div>
       <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 12px;">Page Not Found</h1>
-      <p style="color: var(--text-muted); max-width: 480px; margin: 0 auto 32px; font-size: 1.05rem;">
-        The page you are looking for does not exist or may have expired.
+      <p style="color: var(--text-muted); max-width: 480px; margin: 0 auto 32px; font-size: 1.05rem; line-height: 1.6;">
+        The page you are looking for does not exist, or the shared link may have expired and been permanently removed.
       </p>
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
         <a href="/" class="btn btn-primary btn-lg">Return to Homepage</a>
@@ -50,11 +62,10 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom">
-        <p>&copy; 2026 QuickShare. Designed for privacy, reliability, and security.</p>
+        <p>&copy; 2026 F Share. Fast, Simple & Secure File Sharing. <a href="/privacy.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Privacy Policy</a> &bull; <a href="/terms.html" style="color: var(--primary); text-decoration: none; margin-left: 10px;">Terms of Service</a></p>
       </div>
     </div>
   </footer>
 
 </body>
 </html>
-

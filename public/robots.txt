@@ -1,0 +1,26 @@
+# F Share robots.txt
+User-agent: *
+Allow: /
+Allow: /upload.html
+Allow: /receive.html
+Allow: /about.html
+Allow: /privacy.html
+Allow: /terms.html
+
+# Disallow API and backend endpoints
+Disallow: /api/
+Disallow: /health
+
+# Disallow dynamic share redirector and parameterized recipient URLs
+Disallow: /share.html
+Disallow: /receive.html?*
+Disallow: /*?*code=
+Disallow: /*?*token=
+
+# Disallow local fallback storage folders
+Disallow: /uploads/
+Disallow: /local-storage/
+
+# Sitemap location
+Sitemap: /sitemap.xml
+

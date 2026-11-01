@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: quickshare
+    name: fshare
     env: node
     plan: free
     region: oregon
