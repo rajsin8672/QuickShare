@@ -19,6 +19,9 @@ validateEnv();
 
 const app = express();
 
+// Trust reverse proxies (Render, Cloudflare, AWS ALB) for client IP and HTTPS protocol
+app.set('trust proxy', 1);
+
 // 1. Helmet Security Headers with custom Content-Security-Policy
 app.use(
   helmet({

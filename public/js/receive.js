@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const receiveAlert = document.getElementById('receive-alert');
 
   const passwordCard = document.getElementById('password-card');
+  const passwordForm = document.getElementById('password-form');
   const passwordInput = document.getElementById('share-password');
   const toggleReceivePasswordBtn = document.getElementById('toggle-receive-password-btn');
   const submitPasswordBtn = document.getElementById('submit-password-btn');
@@ -102,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (passwordCard) passwordCard.style.display = 'none';
     if (contentCard) contentCard.style.display = 'none';
 
+    let data;
     try {
       const res = await fetch('/api/shares/receive', {
         method: 'POST',
@@ -112,20 +114,39 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ code, token })
       });
 
-      const response = await res.json();
+      let response = null;
+      try {
+        response = await res.json();
+      } catch (e) {
+        response = null;
+      }
+
       if (submitCodeBtn) {
         submitCodeBtn.disabled = false;
         submitCodeBtn.textContent = 'Access Files';
       }
 
-      if (!res.ok || !response.success) {
-        showAlert(response.error || 'Failed to access share.');
+      if (!res.ok || !response?.success) {
+        const errorMsg = response?.error || (res.status === 404
+          ? 'Share not found or expired. Please check your code and try again.'
+          : `Unable to access share (HTTP ${res.status}).`);
+        showAlert(errorMsg);
         return;
       }
 
       activeShareCode = code;
-      const data = response.data;
+      data = response.data;
+    } catch (err) {
+      console.error('Fetch share network error:', err);
+      if (submitCodeBtn) {
+        submitCodeBtn.disabled = false;
+        submitCodeBtn.textContent = 'Access Files';
+      }
+      showAlert('Network error while looking up code. Please check your connection.');
+      return;
+    }
 
+    try {
       // Check if password required
       if (data.requiresPassword) {
         activeAuthToken = '';
@@ -134,12 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (token) activeAuthToken = token;
         showUnlockedShare(data);
       }
-    } catch (err) {
-      if (submitCodeBtn) {
-        submitCodeBtn.disabled = false;
-        submitCodeBtn.textContent = 'Access Files';
-      }
-      showAlert('Network error while looking up code. Please check your connection.');
+    } catch (renderErr) {
+      console.error('Render error:', renderErr);
+      showAlert('An unexpected error occurred while displaying this share.');
     }
   }
 
@@ -160,56 +178,82 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (passwordError) passwordError.style.display = 'none';
     }
-    window.scrollTo({ top: passwordCard?.offsetTop - 80 || 0, behavior: 'smooth' });
+    if (passwordCard && typeof passwordCard.offsetTop === 'number') {
+      window.scrollTo({ top: passwordCard.offsetTop - 80, behavior: 'smooth' });
+    }
   }
 
-  if (submitPasswordBtn) {
-    submitPasswordBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const password = (passwordInput?.value || '').trim();
-      if (!password) {
+  async function handlePasswordSubmit(e) {
+    if (e) e.preventDefault();
+    const password = (passwordInput?.value || '').trim();
+    if (!password) {
+      if (passwordError) {
+        passwordError.textContent = 'Please enter the share password.';
+        passwordError.style.display = 'block';
+      }
+      return;
+    }
+
+    if (submitPasswordBtn) {
+      submitPasswordBtn.disabled = true;
+      submitPasswordBtn.textContent = 'Verifying...';
+    }
+    if (passwordError) passwordError.style.display = 'none';
+
+    let result = null;
+    try {
+      const res = await fetch(`/api/shares/${encodeURIComponent(activeShareCode)}/verify-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      try {
+        result = await res.json();
+      } catch (e) {
+        result = null;
+      }
+
+      if (submitPasswordBtn) {
+        submitPasswordBtn.disabled = false;
+        submitPasswordBtn.textContent = 'Unlock Share';
+      }
+
+      if (!res.ok || !result?.success) {
         if (passwordError) {
-          passwordError.textContent = 'Please enter the share password.';
+          passwordError.textContent = result?.error || 'Incorrect password.';
           passwordError.style.display = 'block';
         }
         return;
       }
-
-      submitPasswordBtn.disabled = true;
-      submitPasswordBtn.textContent = 'Verifying...';
-      if (passwordError) passwordError.style.display = 'none';
-
-      try {
-        const res = await fetch(`/api/shares/${encodeURIComponent(activeShareCode)}/verify-password`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password })
-        });
-
-        const result = await res.json();
+    } catch (err) {
+      console.error('Password verify network error:', err);
+      if (submitPasswordBtn) {
         submitPasswordBtn.disabled = false;
         submitPasswordBtn.textContent = 'Unlock Share';
-
-        if (!res.ok || !result.success) {
-          if (passwordError) {
-            passwordError.textContent = result.error || 'Incorrect password.';
-            passwordError.style.display = 'block';
-          }
-          return;
-        }
-
-        activeAuthToken = result.data.token;
-        if (passwordCard) passwordCard.style.display = 'none';
-        showUnlockedShare(result.data.share);
-      } catch (err) {
-        submitPasswordBtn.disabled = false;
-        submitPasswordBtn.textContent = 'Unlock Share';
-        if (passwordError) {
-          passwordError.textContent = 'Network error verifying password.';
-          passwordError.style.display = 'block';
-        }
       }
-    });
+      if (passwordError) {
+        passwordError.textContent = 'Network error verifying password. Please check your connection.';
+        passwordError.style.display = 'block';
+      }
+      return;
+    }
+
+    try {
+      activeAuthToken = result.data.token;
+      if (passwordCard) passwordCard.style.display = 'none';
+      showUnlockedShare(result.data.share);
+    } catch (renderErr) {
+      console.error('Render error after password unlock:', renderErr);
+      showAlert('An unexpected error occurred while displaying this share.');
+    }
+  }
+
+  if (passwordForm) {
+    passwordForm.addEventListener('submit', handlePasswordSubmit);
+  }
+  if (submitPasswordBtn) {
+    submitPasswordBtn.addEventListener('click', handlePasswordSubmit);
   }
 
   // 6. Render Unlocked Share Content
@@ -329,7 +373,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (filesSection) filesSection.style.display = 'none';
     }
 
-    window.scrollTo({ top: contentCard.offsetTop - 80, behavior: 'smooth' });
+    if (contentCard && typeof contentCard.offsetTop === 'number') {
+      window.scrollTo({ top: contentCard.offsetTop - 80, behavior: 'smooth' });
+    }
   }
 
   // 7. Copy Text Message Button
