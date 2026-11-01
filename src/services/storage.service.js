@@ -57,7 +57,7 @@ class LocalStorageService {
   }
 
   async deleteFiles(storagePaths) {
-    if (!storagePaths || storagePaths.length === 0) return;
+    if (!storagePaths || storagePaths.length === 0) return { success: true, count: 0 };
     for (const sp of storagePaths) {
       try {
         const fullPath = this.getFilePath(sp);
@@ -65,9 +65,13 @@ class LocalStorageService {
           await fs.promises.unlink(fullPath);
         }
       } catch (err) {
-        console.warn(`[LocalStorage] Failed to delete file ${sp}:`, err.message);
+        if (err.code !== 'ENOENT') {
+          console.warn(`[LocalStorage] Failed to delete file ${sp}:`, err.message);
+          throw new Error(`LocalStorage file deletion error: ${err.message}`);
+        }
       }
     }
+    return { success: true };
   }
 }
 
@@ -127,15 +131,19 @@ class SupabaseStorageService {
   }
 
   async deleteFiles(storagePaths) {
-    if (!storagePaths || storagePaths.length === 0) return;
+    if (!storagePaths || storagePaths.length === 0) return { success: true, count: 0 };
+    const validPaths = storagePaths.filter(p => typeof p === 'string' && p.trim().length > 0);
+    if (validPaths.length === 0) return { success: true, count: 0 };
+
     const { data, error } = await this.client.storage
       .from(this.bucketName)
-      .remove(storagePaths);
+      .remove(validPaths);
 
     if (error) {
       console.warn(`[SupabaseStorage] Error deleting files: ${error.message}`);
+      throw new Error(`Supabase Storage file deletion error: ${error.message}`);
     }
-    return data;
+    return { success: true, data };
   }
 }
 

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import { config, validateEnv } from './config/env.js';
 import healthRoutes from './routes/health.routes.js';
 import sharesRoutes from './routes/shares.routes.js';
+import cleanupRoutes from './routes/cleanup.routes.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -178,6 +179,7 @@ app.use(express.static(path.join(rootDir, 'public')));
 
 // 8. Mount API Routes
 app.use('/api', healthRoutes);
+app.use('/api', cleanupRoutes);
 app.use('/api/shares', sharesRoutes);
 
 // 9. 404 Handler for undefined API routes

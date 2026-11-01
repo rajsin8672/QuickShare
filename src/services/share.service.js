@@ -25,7 +25,7 @@ export class ShareService {
   /**
    * Create a new share with files and/or text message
    */
-  async createShare({ files = [], textContent = '', password = '', expiryMinutes = 30, downloadLimit = null }) {
+  async createShare({ files = [], textContent = '', password = '', expiryMinutes = 1440, downloadLimit = null }) {
     const trimmedText = (textContent || '').trim();
 
     // 1. Validation: Reject completely empty shares
@@ -486,8 +486,20 @@ export class ShareService {
     }
     await db.recordDownloadEvent(share.id, file.id, 'single_file_signed_url', ipHash);
 
-    // Constrain expiresIn between 10s and 300s (default: 60s)
-    const validExpires = Math.min(Math.max(Number(expiresInSeconds) || 60, 10), 300);
+    // Calculate remaining seconds until share expiration
+    const nowMs = Date.now();
+    const expiresAtMs = new Date(share.expires_at).getTime();
+    const remainingSeconds = Math.floor((expiresAtMs - nowMs) / 1000);
+    if (remainingSeconds <= 0) {
+      await db.setShareExpired(share.id);
+      const err = new Error('This share has expired.');
+      err.statusCode = 410;
+      throw err;
+    }
+
+    // Constrain expiresIn between 5s and 300s (default: 60s), strictly capped by remaining share lifetime
+    const requestedExpires = Math.min(Math.max(Number(expiresInSeconds) || 60, 5), 300);
+    const validExpires = Math.min(requestedExpires, remainingSeconds);
     const signedUrl = await storage.createSignedUrl(file.storage_path, validExpires, file.original_filename);
 
     return {

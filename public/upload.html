@@ -153,10 +153,6 @@
           <label class="form-label">Expiration Period</label>
           <div class="expiration-grid">
             <div>
-              <input type="radio" name="expiryMinutes" id="exp-30m" value="30" class="expiry-radio-input" checked>
-              <label for="exp-30m" class="expiry-radio-label">30 Minutes</label>
-            </div>
-            <div>
               <input type="radio" name="expiryMinutes" id="exp-1h" value="60" class="expiry-radio-input">
               <label for="exp-1h" class="expiry-radio-label">1 Hour</label>
             </div>
@@ -165,15 +161,19 @@
               <label for="exp-6h" class="expiry-radio-label">6 Hours</label>
             </div>
             <div>
-              <input type="radio" name="expiryMinutes" id="exp-24h" value="1440" class="expiry-radio-input">
-              <label for="exp-24h" class="expiry-radio-label">24 Hours</label>
+              <input type="radio" name="expiryMinutes" id="exp-24h" value="1440" class="expiry-radio-input" checked>
+              <label for="exp-24h" class="expiry-radio-label">24 Hours (Default)</label>
+            </div>
+            <div>
+              <input type="radio" name="expiryMinutes" id="exp-3d" value="4320" class="expiry-radio-input">
+              <label for="exp-3d" class="expiry-radio-label">3 Days</label>
             </div>
             <div>
               <input type="radio" name="expiryMinutes" id="exp-7d" value="10080" class="expiry-radio-input">
               <label for="exp-7d" class="expiry-radio-label">7 Days</label>
             </div>
           </div>
-          <p class="form-hint">Files and messages are permanently purged from storage once the expiration is reached.</p>
+          <p class="form-hint">Files and messages are automatically and permanently purged from storage once the expiration timestamp is reached.</p>
         </div>
 
         <!-- Advanced Security Settings Accordion -->

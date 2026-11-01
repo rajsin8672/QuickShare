@@ -78,16 +78,17 @@ describe('Validation and Sanitization Utilities', () => {
   });
 
   it('should validate and constrain expiration minutes', () => {
-    assert.equal(validateExpiryMinutes(30), 30);
     assert.equal(validateExpiryMinutes(60), 60);
     assert.equal(validateExpiryMinutes(360), 360);
     assert.equal(validateExpiryMinutes(1440), 1440);
+    assert.equal(validateExpiryMinutes(4320), 4320);
     assert.equal(validateExpiryMinutes(10080), 10080);
 
-    // Unlisted expiration values default to 30
-    assert.equal(validateExpiryMinutes(999999), 30);
-    assert.equal(validateExpiryMinutes(-10), 30);
-    assert.equal(validateExpiryMinutes('invalid'), 30);
+    // Unlisted or missing expiration values default to 1440 (24 hours)
+    assert.equal(validateExpiryMinutes(999999), 1440);
+    assert.equal(validateExpiryMinutes(-10), 1440);
+    assert.equal(validateExpiryMinutes('invalid'), 1440);
+    assert.equal(validateExpiryMinutes(undefined), 1440);
   });
 
   it('should validate optional download limits', () => {

@@ -447,9 +447,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Get selected expiry
+      // Get selected expiry (Default: 24 Hours = 1440 mins)
       const selectedExpiryRadio = document.querySelector('input[name="expiryMinutes"]:checked');
-      const expiryMinutes = selectedExpiryRadio ? selectedExpiryRadio.value : '30';
+      const expiryMinutes = selectedExpiryRadio ? selectedExpiryRadio.value : '1440';
 
       // Advanced inputs
       const password = (passwordInput?.value || '').trim();

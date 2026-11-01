@@ -25,9 +25,11 @@ services:
       - key: MAX_FILE_COUNT
         value: "10"
       - key: DEFAULT_EXPIRY_MINUTES
-        value: "30"
+        value: "1440"
       - key: CLEANUP_INTERVAL_MINUTES
-        value: "15"
+        value: "5"
+      - key: CRON_SECRET
+        generateValue: true
       - key: RATE_LIMIT_WINDOW_MS
         value: "900000"
       - key: RATE_LIMIT_MAX_REQUESTS

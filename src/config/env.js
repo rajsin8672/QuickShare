@@ -89,9 +89,10 @@ export const config = {
   allowedVideoFormats: (process.env.ALLOWED_VIDEO_FORMATS || 'mp4,webm,mov').toLowerCase().split(',').map(s => s.trim()),
   allowedDocFormats: (process.env.ALLOWED_DOC_FORMATS || 'pdf,txt,doc,docx').toLowerCase().split(',').map(s => s.trim()),
 
-  // Expiration & Cleanup
-  defaultExpiryMinutes: parseInt(process.env.DEFAULT_EXPIRY_MINUTES || '30', 10),
-  cleanupIntervalMinutes: parseInt(process.env.CLEANUP_INTERVAL_MINUTES || '15', 10),
+  // Expiration & Cleanup (Default: 24 hours expiration, 5-minute cleanup cycle)
+  defaultExpiryMinutes: parseInt(process.env.DEFAULT_EXPIRY_MINUTES || '1440', 10),
+  cleanupIntervalMinutes: parseInt(process.env.CLEANUP_INTERVAL_MINUTES || '5', 10),
+  cronSecret: process.env.CRON_SECRET || process.env.CLEANUP_API_KEY || '',
 
   // Rate Limiting
   rateLimit: {

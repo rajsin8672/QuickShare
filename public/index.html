@@ -66,7 +66,7 @@
         },
         "featureList": [
           "Ephemeral file sharing using 6-character codes",
-          "Automatic expiration from 30 minutes up to 7 days",
+          "Automatic expiration from 1 hour up to 7 days (24h default)",
           "Optional bcrypt password protection",
           "Max 10 files and 100MB per share",
           "In-browser preview for photos, videos, and PDFs",
@@ -106,7 +106,7 @@
             "name": "How long are files kept before automatic deletion?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Senders choose an expiration period of 30 minutes (default), 1 hour, 6 hours, 24 hours, or 7 days. Once the expiration time passes or the maximum download count is reached, all stored files and database records are permanently purged."
+              "text": "Senders choose an expiration period of 1 hour, 6 hours, 24 hours (default), 3 days, or 7 days. Once the expiration time passes or the maximum download count is reached, all stored files and database records are permanently purged."
             }
           },
           {
@@ -211,7 +211,7 @@
             <div class="step-number" aria-hidden="true">1</div>
             <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Upload Content or Note</h3>
             <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
-              Select up to 10 files (photos, videos, PDFs, documents) or type a text message. Choose an expiration window from 30 minutes up to 7 days, and optionally set a password.
+              Select up to 10 files (photos, videos, PDFs, documents) or type a text message. Choose an expiration window (default 24 hours, or 1h, 6h, 3d, 7d), and optionally set a password.
             </p>
           </div>
 
@@ -407,7 +407,7 @@
               </svg>
             </button>
             <div class="faq-answer">
-              The sender decides the exact lifespan of the share: 30 minutes (default), 1 hour, 6 hours, 24 hours, or 7 days. Additionally, senders can specify a download limit (for instance, 1 download). Once the timer elapses or the limit is hit, the files are permanently wiped by our automated cleanup engine.
+              The sender decides the exact lifespan of the share: 1 hour, 6 hours, 24 hours (default), 3 days, or 7 days. Additionally, senders can specify a download limit (for instance, 1 download). Once the timer elapses or the limit is hit, the files are permanently wiped by our automated cleanup engine.
             </div>
           </div>
 

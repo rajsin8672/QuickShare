@@ -26,8 +26,9 @@ export const ALLOWED_EXTENSIONS = new Set([
   '.mp4', '.webm', '.mov'
 ]);
 
-// Allowed expiration periods in minutes
-export const ALLOWED_EXPIRATION_MINUTES = [30, 60, 360, 1440, 10080]; // 30m, 1h, 6h, 24h, 7d
+// Allowed expiration periods in minutes: 1h, 6h, 24h, 3d, 7d (plus 30m for backwards compatibility)
+export const ALLOWED_EXPIRATION_MINUTES = [30, 60, 360, 1440, 4320, 10080];
+export const DEFAULT_EXPIRATION_MINUTES = 1440; // 24 Hours default
 
 /**
  * Determine file category from extension and MIME type
@@ -216,14 +217,14 @@ export function validateFileType(filename, mimeType, buffer = null) {
 /**
  * Validate expiration minutes
  * @param {number|string} minutes 
- * @returns {number} Validated minutes
+ * @returns {number} Validated minutes (defaults to 1440 = 24 hours)
  */
 export function validateExpiryMinutes(minutes) {
   const parsed = parseInt(minutes, 10);
   if (ALLOWED_EXPIRATION_MINUTES.includes(parsed)) {
     return parsed;
   }
-  return 30; // Default to 30 minutes
+  return DEFAULT_EXPIRATION_MINUTES; // Default to 24 hours (1440 minutes)
 }
 
 /**

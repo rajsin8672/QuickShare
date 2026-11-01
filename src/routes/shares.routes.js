@@ -129,6 +129,9 @@ router.get('/:code', codeGuessLimiter, async (req, res, next) => {
 router.get('/:code/qr', async (req, res, next) => {
   try {
     const { code } = req.params;
+    // Verify share exists and is not expired
+    await shareService.getShare(code, null);
+
     const protocol = req.protocol;
     const host = req.get('host');
     const shareUrl = `${protocol}://${host}/receive.html?code=${encodeURIComponent(code)}`;

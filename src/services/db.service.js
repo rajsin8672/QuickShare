@@ -124,12 +124,13 @@ class MemoryDB {
     return true;
   }
 
-  async getExpiredActiveShares() {
+  async getExpiredActiveShares(batchSize = 50) {
     const now = new Date();
     const expired = [];
     for (const share of this.shares.values()) {
-      if (share.status === 'active' && new Date(share.expires_at) <= now) {
+      if (new Date(share.expires_at) <= now) {
         expired.push(share);
+        if (expired.length >= batchSize) break;
       }
     }
     return expired;
@@ -557,15 +558,16 @@ class SupabaseDB {
     }
   }
 
-  async getExpiredActiveShares() {
+  async getExpiredActiveShares(batchSize = 50) {
     await this.ensureSchemaInfo();
     const nowIso = new Date().toISOString();
 
-    let query = this.client.from('shares').select('*');
-    if (this.columnsCache.has('status')) {
-      query = query.eq('status', 'active');
-    }
-    query = query.lte('expires_at', nowIso);
+    let query = this.client
+      .from('shares')
+      .select('*')
+      .lte('expires_at', nowIso)
+      .order('expires_at', { ascending: true })
+      .limit(batchSize);
 
     const { data, error } = await query;
     if (error) {
@@ -603,16 +605,20 @@ class SupabaseDB {
   }
 
   async hardDeleteShare(shareId) {
-    if (!shareId) return;
-    try {
-      await this.ensureSchemaInfo();
-      if (this.hasFilesTable) {
-        await this.client.from('share_files').delete().eq('share_id', shareId);
-      }
-      await this.client.from('shares').delete().eq('id', shareId);
-    } catch (err) {
-      console.warn(`[SupabaseDB] Failed to hard delete share ${shareId}:`, err.message);
+    if (!shareId) return false;
+    await this.ensureSchemaInfo();
+    if (this.hasFilesTable) {
+      await this.client.from('share_files').delete().eq('share_id', shareId);
     }
+    if (this.hasEventsTable) {
+      await this.client.from('download_events').delete().eq('share_id', shareId);
+    }
+    const { error } = await this.client.from('shares').delete().eq('id', shareId);
+    if (error) {
+      console.warn(`[SupabaseDB] Failed to hard delete share ${shareId}:`, error.message);
+      throw new Error(`Database error deleting share record: ${error.message}`);
+    }
+    return true;
   }
 }
 
