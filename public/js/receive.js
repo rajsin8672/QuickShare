@@ -136,6 +136,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       activeShareCode = code;
       data = response.data;
+
+      // Sync URL query param to active code cleanly
+      try {
+        const currentUrl = new URL(window.location.href);
+        if (currentUrl.searchParams.get('code') !== code) {
+          currentUrl.searchParams.set('code', code);
+          window.history.replaceState({}, '', currentUrl.toString());
+        }
+      } catch (e) {}
     } catch (err) {
       console.error('Fetch share network error:', err);
       if (submitCodeBtn) {
