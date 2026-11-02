@@ -59,6 +59,7 @@ describe('Technical & On-Page SEO and F Share Rebranding Verification', () => {
 
     // Canonical tag and robots
     assert.ok(html.includes('<meta name="robots" content="index, follow">'));
+    assert.ok(html.includes('<meta name="google-site-verification" content="P-IobR8seLtm2v6jzbv1RFetugUr8Vj7ir8bpNzlvYI" />'));
     assert.ok(html.includes('<link rel="canonical"'));
 
     // JSON-LD validation
